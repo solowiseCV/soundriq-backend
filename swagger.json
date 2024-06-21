@@ -1,0 +1,121 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "User Registration API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/user/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Register a new user with email and name",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userData",
+            "in": "body",
+            "description": "User data including email and name",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john@example.com"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                }
+              },
+              "required": [
+                "email",
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "Get all users",
+        "description": "Retrieve a list of all registered users",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "users": {
+                  "type": "array",
+                  "items": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No users found"
+          }
+        }
+      }
+    },
+    "/user/find/{email}": {
+      "get": {
+        "summary": "Get user by email",
+        "description": "Retrieve a user by their email address",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "Email address of the user to retrieve",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User found"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "summary": "Get API status",
+        "description": "Check the status of the API",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "API is up and running"
+          }
+        }
+      }
+    }
+  }
+}
