@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "User Registration API",
+    "title": "SoundRig's API",
     "version": "1.0.0"
   },
   "paths": {
