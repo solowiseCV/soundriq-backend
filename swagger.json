@@ -153,6 +153,35 @@
         }
       }
     },
+    "/files/upload": {
+      "post": {
+        "summary": "Upload a file",
+        "description": "Upload a file to the server",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "The file to upload",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
     "/status": {
       "get": {
         "summary": "Get API status",
