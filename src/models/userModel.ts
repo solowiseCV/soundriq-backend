@@ -1,17 +1,17 @@
-import prisma from "../config/database";
+import { PrismaClient, User } from "@prisma/client";
 
-class UserModel {
-  static async createUser(data: { name: string; email: string }) {
-    return prisma.user.create({ data });
-  }
+const prisma = new PrismaClient();
 
-  static async getUserByEmail(email: string) {
-    return prisma.user.findUnique({ where: { email } });
-  }
+export const createUser = async (
+  data: Omit<User, "id" | "createdAt" | "updatedAt">
+): Promise<User> => {
+  return await prisma.user.create({ data });
+};
 
-  static async getAllUsers() {
-    return prisma.user.findMany();
-  }
-}
+export const findUserByEmail = async (email: string): Promise<User | null> => {
+  return await prisma.user.findUnique({ where: { email } });
+};
 
-export default UserModel;
+export const getAllUsers = async (): Promise<User[]> => {
+  return await prisma.user.findMany();
+};

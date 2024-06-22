@@ -11,6 +11,16 @@ class UserController {
     }
   }
 
+  static async loginUser(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body;
+      const { token, user } = await UserService.loginUser(email, password);
+      res.json({ token, user });
+    } catch (error: any) {
+      res.status(400).json({ error: "error.message" });
+    }
+  }
+
   static async getUser(req: Request, res: Response) {
     try {
       const user = await UserService.getUser(req.params.email);

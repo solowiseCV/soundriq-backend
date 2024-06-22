@@ -32,6 +32,10 @@
                 "name": {
                   "type": "string",
                   "example": "John Doe"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password123"
                 }
               },
               "required": [
@@ -44,6 +48,52 @@
         "responses": {
           "200": {
             "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "summary": "Login a user",
+        "description": "Login a user with email and password",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userData",
+            "in": "body",
+            "description": "User data including email and password",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "John Doe"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged in successfully"
           },
           "400": {
             "description": "Invalid input"

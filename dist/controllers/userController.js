@@ -14,6 +14,16 @@ class UserController {
             res.status(400).json({ error: error.message });
         }
     }
+    static async loginUser(req, res) {
+        try {
+            const { email, password } = req.body;
+            const { token, user } = await userService_1.default.loginUser(email, password);
+            res.json({ token, user });
+        }
+        catch (error) {
+            res.status(400).json({ error: "error.message" });
+        }
+    }
     static async getUser(req, res) {
         try {
             const user = await userService_1.default.getUser(req.params.email);

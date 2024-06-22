@@ -48,6 +48,6 @@ const options = {
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 const setupSwagger = (app) => {
-    app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
+    app.use("/", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
 };
 exports.default = setupSwagger;

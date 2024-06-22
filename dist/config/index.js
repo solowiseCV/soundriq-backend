@@ -1,8 +1,12 @@
 "use strict";
 require("dotenv").config();
+const port = process.env.PORT || 3000;
+const dbUri = process.env.DB_URI;
+const jwtSecret = process.env.JWT_SECRET;
+const fileUploadPath = process.env.FILE_UPLOAD_PATH || "uploads/";
 module.exports = {
-    port: process.env.PORT || 3000,
-    dbUri: process.env.DB_URI,
-    jwtSecret: process.env.JWT_SECRET,
-    fileUploadPath: process.env.FILE_UPLOAD_PATH || "uploads/",
+    port,
+    dbUri,
+    jwtSecret,
+    fileUploadPath,
 };
