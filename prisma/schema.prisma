@@ -16,6 +16,48 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Artist {
+  id                Int      @id @default(autoincrement())
+  
+  // Personal Information
+  fullName          String
+  artistName        String
+  email             String
+  
+  // Media Links
+  profilePhoto      String
+  bannerImage       String
+  signatureSound    String
+  
+  // Origin and Bio
+  countryOfOrigin   String
+  bio               String
+  
+  // Music Genre
+  musicGenre        String
+  
+  // Music Platform Addresses
+  appleMusicAddress String
+  spotifyAddress    String
+  soundCloudAddress String
+  youtubeAddress    String
+  
+  // Social Media Addresses
+  instagramAddress  String
+  tiktokAddress     String
+  
+  // Management
+  manager           String
+  
+  // Timestamps
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([artistName])
+  @@index([email])
+}
+
+
 
 model File {
   id        Int      @id @default(autoincrement())
