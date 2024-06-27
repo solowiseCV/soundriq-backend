@@ -1,6 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma, {User} from "../config/database";
 
 export const createUser = async (
   data: Omit<User, "id" | "createdAt" | "updatedAt">

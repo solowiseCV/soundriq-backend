@@ -1,4 +1,5 @@
 import { createUser, findUserByEmail, getAllUsers } from "../models/userModel";
+import { findArtistByEmail } from "../models/artistModel";
 import bcrypt from "bcrypt";
 import { generateToken, verifyToken } from "../utils/jwt";
 
@@ -9,23 +10,43 @@ class UserService {
       ...userData,
       password: hashedPassword,
     });
-    return user;
+
+    const userInfo = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    };
+    return userInfo;
   }
 
   static async loginUser(email: string, password: string) {
     const user = await findUserByEmail(email);
-    if (!user) {
+
+    // find if a user is an artist
+    const artist = await findArtistByEmail(email);
+
+    const userCredential = user ? user : artist;
+
+    if (!userCredential) {
       throw new Error("User not found");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      userCredential.password
+    );
     if (!isPasswordValid) {
       throw new Error("Invalid credentials");
     }
 
-    const token = generateToken(user.id);
+    const token = generateToken(userCredential.id);
 
-    return { token, user };
+    const userInfo = {
+      id: userCredential.id,
+      email: userCredential.email,
+    };
+
+    return { token, userInfo };
   }
 
   static async getUser(email: string) {
