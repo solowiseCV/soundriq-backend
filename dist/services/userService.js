@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const userModel_1 = require("../models/userModel");
+const artistModel_1 = require("../models/artistModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jwt_1 = require("../utils/jwt");
 class UserService {
@@ -13,19 +14,31 @@ class UserService {
             ...userData,
             password: hashedPassword,
         });
-        return user;
+        const userInfo = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        };
+        return userInfo;
     }
     static async loginUser(email, password) {
         const user = await (0, userModel_1.findUserByEmail)(email);
-        if (!user) {
+        // find if a user is an artist
+        const artist = await (0, artistModel_1.findArtistByEmail)(email);
+        const userCredential = user ? user : artist;
+        if (!userCredential) {
             throw new Error("User not found");
         }
-        const isPasswordValid = await bcrypt_1.default.compare(password, user.password);
+        const isPasswordValid = await bcrypt_1.default.compare(password, userCredential.password);
         if (!isPasswordValid) {
             throw new Error("Invalid credentials");
         }
-        const token = (0, jwt_1.generateToken)(user.id);
-        return { token, user };
+        const token = (0, jwt_1.generateToken)(userCredential.id);
+        const userInfo = {
+            id: userCredential.id,
+            email: userCredential.email,
+        };
+        return { token, userInfo };
     }
     static async getUser(email) {
         const user = await (0, userModel_1.findUserByEmail)(email);
