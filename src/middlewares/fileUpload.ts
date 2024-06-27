@@ -3,9 +3,13 @@ import fs from "fs";
 import path from "path";
 
 // Ensure the uploads directory exists
-const uploadDir = "uploads";
+const uploadDir = "uploads/";
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+  try {
+    fs.mkdirSync(uploadDir);
+  } catch (err) {
+    console.error("Error creating upload folder:", err);
+  }
 }
 
 const storage = multer.diskStorage({
@@ -20,5 +24,11 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
+
+export const uploadFileMiddleware = multer({ storage: storage }).fields([
+  { name: 'profilePhoto' },
+  { name: 'bannerImage' },
+  { name: 'signatureSound' },
+]);
 
 export const upload = multer({ storage: storage });

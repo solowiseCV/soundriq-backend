@@ -7,6 +7,19 @@ const userService_1 = __importDefault(require("../services/userService"));
 class UserController {
     static async registerUser(req, res) {
         try {
+            const { email, password } = req.body;
+            if (!email || !password) {
+                throw new Error("Email and password are required");
+            }
+            // check email format
+            const emailRegex = /\S+@\S+\.\S+/;
+            if (!emailRegex.test(email)) {
+                throw new Error("Invalid email format");
+            }
+            // check password length
+            if (password.length < 8) {
+                throw new Error("Password must be at least 8 characters long");
+            }
             const user = await userService_1.default.registerUser(req.body);
             res.status(201).json(user);
         }
@@ -17,11 +30,11 @@ class UserController {
     static async loginUser(req, res) {
         try {
             const { email, password } = req.body;
-            const { token, user } = await userService_1.default.loginUser(email, password);
-            res.json({ token, user });
+            const { token, userInfo } = await userService_1.default.loginUser(email, password);
+            res.json({ token, userInfo });
         }
         catch (error) {
-            res.status(400).json({ error: "error.message" });
+            res.status(400).json({ error: error.message });
         }
     }
     static async getUser(req, res) {

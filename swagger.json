@@ -55,6 +55,36 @@
         }
       }
     },
+    "/artist/register": {
+      "post": {
+        "summary": "Register a new artist",
+        "description": "Register a new artist with name and genre",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          
+            {
+              "name": "file",
+              "in": "formData",
+              "description": "The file to upload",
+              "required": true,
+              "type": "file"
+            }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist registered successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
     "/user/login": {
       "post": {
         "summary": "Login a user",
