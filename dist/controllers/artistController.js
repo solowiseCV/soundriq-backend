@@ -35,12 +35,14 @@ const calculateProfileCompletion = (artist) => {
 class ArtistController {
     static async register(req, res) {
         try {
-            const { fullName, email, password } = req.body;
+            const { fullName, email, password, dateOfBirth } = req.body;
             const data = {
                 fullName,
                 email,
+                dateOfBirth,
                 password,
             };
+            console.log("data:", data);
             const artist = await artistService_1.default.registerArtist(data);
             if (!artist) {
                 res.status(400).json({ error: "Artist registration failed" });
