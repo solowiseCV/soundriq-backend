@@ -42,13 +42,17 @@ const calculateProfileCompletion = (artist: Artist): number => {
 class ArtistController {
   static async register(req: Request, res: Response): Promise<void> {
     try {
-      const { fullName, email, password } = req.body;
+      const { fullName, email, password, dateOfBirth } = req.body;
 
+      
       const data = {
         fullName,
         email,
+        dateOfBirth,
         password,
       };
+
+      console.log("data:" , data);
 
       const artist = await ArtistService.registerArtist(data);
 
