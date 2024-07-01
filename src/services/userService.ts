@@ -1,7 +1,7 @@
 import { createUser, findUserByEmail, getAllUsers } from "../models/userModel";
 import { findArtistByEmail } from "../models/artistModel";
 import bcrypt from "bcrypt";
-import { generateToken, verifyToken } from "../utils/jwt";
+import { generateToken } from "../utils/jwt";
 
 class UserService {
   static async registerUser(userData: any) {

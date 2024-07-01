@@ -6,6 +6,12 @@ export const createArtist = async (
   return await prisma.artist.create({ data });
 };
 
+export const updatedArtist = async (
+  data: Omit<Artist, "createdAt" | "updatedAt">
+): Promise<Artist> => {
+  return await prisma.artist.update({ where: { id: data.id  }, data});
+}
+
 export const findArtistByEmail = async (email: string): Promise<Artist | null> => {
   return await prisma.artist.findUnique({ where: { email } });
 };
