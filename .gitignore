@@ -4,4 +4,4 @@ node_modules
 uploads
 push.sh
 
-runMigration.sh
+./runMigration.sh
