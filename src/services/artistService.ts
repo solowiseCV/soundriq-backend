@@ -5,12 +5,13 @@ import {
   findArtistByEmail,
 } from "../models/artistModel";
 import bcrypt from "bcrypt";
-import { generateToken, verifyToken } from "../utils/jwt";
 
 class ArtistService {
   static async registerArtist(artistData: any) {
+    // console.log(artistData)
     const existingArtist = await findArtistByEmail(artistData.email);
 
+    console.log(existingArtist)
     if (existingArtist) {
       return { error: "Artist already exists" };
       // throw new Error("Artist already exists");

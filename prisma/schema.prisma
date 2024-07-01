@@ -23,6 +23,7 @@ model Artist {
   fullName          String
   artistName        String?
   email             String   @unique
+  dateOfBirth       String?   
   password          String
  
   
