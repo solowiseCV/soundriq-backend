@@ -52,8 +52,6 @@ class ArtistController {
         password,
       };
 
-      console.log("data:" , data);
-
       const artist = await ArtistService.registerArtist(data);
 
       if (!artist) {
