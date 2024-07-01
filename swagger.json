@@ -19,7 +19,7 @@
           {
             "name": "userData",
             "in": "body",
-            "description": "User data including email and name",
+            "description": "User data including  email and name",
             "required": true,
             "schema": {
               "type": "object",
