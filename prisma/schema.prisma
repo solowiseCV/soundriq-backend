@@ -21,35 +21,35 @@ model Artist {
   
   // Personal Information
   fullName          String
-  artistName        String
+  artistName        String?
   email             String   @unique
   password          String
  
   
   // Media Links
-  profilePhoto      String
-  bannerImage       String
-  signatureSound    String
+  profilePhoto      String?
+  bannerImage       String?
+  signatureSound    String?
   
   // Origin and Bio
-  countryOfOrigin   String
-  bio               String
+  countryOfOrigin   String?
+  bio               String?
   
   // Music Genre
-  musicGenre        String
+  musicGenre        String?
   
   // Music Platform Addresses
-  appleMusicAddress String
-  spotifyAddress    String
-  soundCloudAddress String
-  youtubeAddress    String
+  appleMusicAddress String?
+  spotifyAddress    String?
+  soundCloudAddress String?
+  youtubeAddress    String?
   
   // Social Media Addresses
-  instagramAddress  String
-  tiktokAddress     String
+  instagramAddress  String?
+  tiktokAddress     String?
   
   // Management
-  manager           String
+  manager           String?
   
   // Timestamps
   createdAt         DateTime @default(now())

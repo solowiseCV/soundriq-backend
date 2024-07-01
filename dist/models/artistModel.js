@@ -3,12 +3,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllArtists = exports.findArtistByEmail = exports.createArtist = void 0;
+exports.getAllArtists = exports.findArtistByEmail = exports.updatedArtist = exports.createArtist = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const createArtist = async (data) => {
     return await database_1.default.artist.create({ data });
 };
 exports.createArtist = createArtist;
+const updatedArtist = async (data) => {
+    return await database_1.default.artist.update({ where: { id: data.id }, data });
+};
+exports.updatedArtist = updatedArtist;
 const findArtistByEmail = async (email) => {
     return await database_1.default.artist.findUnique({ where: { email } });
 };

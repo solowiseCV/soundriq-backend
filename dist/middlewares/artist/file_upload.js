@@ -42,11 +42,11 @@ const upload = (0, multer_1.default)({
     limits: { fileSize: 1000000 }, // Limit file size to 1MB
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
-    }
+    },
 }).fields([
-    { name: 'profilePhoto', maxCount: 1 },
-    { name: 'bannerImage', maxCount: 1 },
-    { name: 'signatureSound', maxCount: 1 }
+    { name: "profilePhoto", maxCount: 1 },
+    { name: "bannerImage", maxCount: 1 },
+    { name: "signatureSound", maxCount: 1 },
 ]);
 // Check file type
 function checkFileType(file, cb) {
@@ -57,7 +57,7 @@ function checkFileType(file, cb) {
         return cb(null, true);
     }
     else {
-        cb('Error: Images Only!');
+        cb("Error: Images Only!");
     }
 }
 exports.default = upload;
