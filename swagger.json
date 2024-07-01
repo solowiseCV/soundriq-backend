@@ -19,7 +19,7 @@
           {
             "name": "userData",
             "in": "body",
-            "description": "User data including  email and name",
+            "description": "User data including email and name",
             "required": true,
             "schema": {
               "type": "object",
@@ -66,14 +66,42 @@
           "application/json"
         ],
         "parameters": [
-          
-            {
-              "name": "file",
-              "in": "formData",
-              "description": "The file to upload",
-              "required": true,
-              "type": "file"
+          {
+            "name": "artistData",
+            "in": "body",
+            "description": "Artist full name, email, date of birth, and password",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john@example.com"
+                },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "1990-01-01"
+                },
+                
+                "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              },
+              "required": [
+                "name",
+                "email",
+                "dateOfBirth",
+                "password"
+              ]
             }
+          }
         ],
         "responses": {
           "200": {
