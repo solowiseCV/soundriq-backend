@@ -4,6 +4,14 @@
     "title": "SoundRig's API",
     "version": "1.0.0"
   },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter your bearer token in the format **Bearer &lt;token>**"
+    }
+  },
   "paths": {
     "/user/register": {
       "post": {
@@ -57,7 +65,7 @@
     },
     "/artist/register": {
       "post": {
-        "summary": "Register a new artist",
+        "summary": "Register a new artist (use unique email)",
         "description": "Register a new artist with name and genre",
         "consumes": [
           "application/json"
@@ -88,7 +96,6 @@
                   "format": "date",
                   "example": "1990-01-01"
                 },
-                
                 "password": {
                   "type": "string",
                   "example": "password123"
@@ -135,7 +142,7 @@
                 "email": {
                   "type": "string",
                   "format": "email",
-                  "example": "John Doe"
+                  "example": "John@example.com"
                 },
                 "password": {
                   "type": "string",
@@ -156,6 +163,113 @@
           "400": {
             "description": "Invalid input"
           }
+        }
+      }
+    },
+    "/artist/complete-profile": {
+      "post": {
+        "summary": "Complete Artist Profile",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "artistData",
+            "in": "body",
+            "description": "Artist data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "artistName": {
+                  "type": "string",
+                  "example": "john Doe"
+                },
+                "countryOfOrigin": {
+                  "type": "string",
+                  "example": "China"
+                },
+                "bio": {
+                  "type": "string",
+                  "example": "kim is the best"
+                },
+                "musicGenre": {
+                  "type": "string",
+                  "example": "metal"
+                },
+                "appleMusicAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "spotifyAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "soundCloudAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "youtubeAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "instagramAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "tiktokAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "manager": {
+                  "type": "string",
+                  "example": "kim"
+                }
+              }
+            }
+          },
+          {
+            "name": "profilePhoto",
+            "in": "formData",
+            "description": "Profile picture of the artist",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "bannerImage",
+            "in": "formData",
+            "description": "Banner Image of the artist",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "signatureSound",
+            "in": "formData",
+            "description": "Signature Sound of the artist",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile completion successful"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "securityDefinitions": {
+        "BearerAuth": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header",
+          "description": "Enter your bearer token in the format **Bearer &lt;token>**"
         }
       }
     },

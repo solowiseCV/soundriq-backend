@@ -114,8 +114,8 @@ class ArtistController {
 
       const artistId = req.artistId as number;
 
-      console.log("Updating artist with data:", data);
-      console.log("Artist ID:", artistId);
+      // console.log("Updating artist with data:", data);
+      // console.log("Artist ID:", artistId);
       const updatedArtist = await ArtistService.completeProfile(artistId, data);
 
       // if (!updatedArtist) {

@@ -42,7 +42,6 @@ class ArtistController {
                 dateOfBirth,
                 password,
             };
-            console.log("data:", data);
             const artist = await artistService_1.default.registerArtist(data);
             if (!artist) {
                 res.status(400).json({ error: "Artist registration failed" });
@@ -85,8 +84,8 @@ class ArtistController {
                 signatureSound,
             };
             const artistId = req.artistId;
-            console.log("Updating artist with data:", data);
-            console.log("Artist ID:", artistId);
+            // console.log("Updating artist with data:", data);
+            // console.log("Artist ID:", artistId);
             const updatedArtist = await artistService_1.default.completeProfile(artistId, data);
             // if (!updatedArtist) {
             //   res.status(400).json({ error: "Profile update failed" });

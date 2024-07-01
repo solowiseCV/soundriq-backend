@@ -8,12 +8,12 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 class ArtistService {
     static async registerArtist(artistData) {
         // console.log(artistData)
-        // const existingArtist = await findArtistByEmail(artistData.email);
-        // console.log(existingArtist)
-        // if (existingArtist) {
-        //   return { error: "Artist already exists" };
-        //   // throw new Error("Artist already exists");
-        // }
+        const existingArtist = await (0, artistModel_1.findArtistByEmail)(artistData.email);
+        console.log(existingArtist);
+        if (existingArtist) {
+            return { error: "Artist already exists" };
+            // throw new Error("Artist already exists");
+        }
         const hashedPassword = await bcrypt_1.default.hash(artistData.password, 10);
         const artist = await (0, artistModel_1.createArtist)({
             ...artistData,
