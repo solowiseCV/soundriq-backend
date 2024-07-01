@@ -74,7 +74,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
+                "fullName": {
                   "type": "string",
                   "example": "John Doe"
                 },
