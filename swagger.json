@@ -63,64 +63,7 @@
         }
       }
     },
-    "/artist/register": {
-      "post": {
-        "summary": "Register a new artist (use unique email)",
-        "description": "Register a new artist with name and genre",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "artistData",
-            "in": "body",
-            "description": "Artist full name, email, date of birth, and password",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "fullName": {
-                  "type": "string",
-                  "example": "John Doe"
-                },
-                "email": {
-                  "type": "string",
-                  "format": "email",
-                  "example": "john@example.com"
-                },
-                "dateOfBirth": {
-                  "type": "string",
-                  "format": "date",
-                  "example": "1990-01-01"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "password123"
-                }
-              },
-              "required": [
-                "name",
-                "email",
-                "dateOfBirth",
-                "password"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Artist registered successfully"
-          },
-          "400": {
-            "description": "Invalid input"
-          }
-        }
-      }
-    },
-    "/user/login": {
+    "/auth/login": {
       "post": {
         "summary": "Login a user",
         "description": "Login a user with email and password",
@@ -166,7 +109,7 @@
         }
       }
     },
-    "/artist/complete-profile": {
+    "/auth/update": {
       "post": {
         "summary": "Complete Artist Profile",
         "security": [
@@ -299,7 +242,7 @@
         }
       }
     },
-    "/user/find/{email}": {
+    "/auth/find/{email}": {
       "get": {
         "summary": "Get user by email",
         "description": "Retrieve a user by their email address",
