@@ -9,15 +9,15 @@ const router = Router();
 router.post("/upload", authenticate, upload.array('file', 2), FileController.uploadFile);
 
 // View a file
-router.get('/:id', FileController.getFile);
+router.get('/:id', authenticate, FileController.getFile);
 
 // View all files
-router.get('/', FileController.getFiles);
+router.get('/', authenticate, FileController.getFiles);
 
 // Update a file
-router.put('/:id',upload.array('file', 1), FileController.updateFile);
+router.put('/:id',upload.array('file', 1), authenticate, FileController.updateFile);
 
 // Delete a file
-router.delete('/:id', FileController.deleteFile);
+router.delete('/:id',authenticate, FileController.deleteFile);
 
 export default router;
