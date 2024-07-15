@@ -25,10 +25,6 @@ const storage = multer.diskStorage({
   },
 });
 
-export const uploadFileMiddleware = multer({ storage: storage }).fields([
-  { name: 'profilePhoto' },
-  { name: 'bannerImage' },
-  { name: 'signatureSound' },
-]);
+export const uploadFileMiddleware = multer({ storage: storage }).array("files", 10);
 
 export const upload = multer({ storage: storage });
