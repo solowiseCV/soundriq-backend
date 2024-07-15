@@ -11,11 +11,11 @@ const router = (0, express_1.Router)();
 // upload a file/s
 router.post("/upload", authenticate_1.authenticate, fileUpload_1.upload.array('file', 2), fileController_1.default.uploadFile);
 // View a file
-router.get('/files/:id', fileController_1.default.getFile);
+router.get('/:id', fileController_1.default.getFile);
 // View all files
-router.get('/files', fileController_1.default.getFiles);
+router.get('/', fileController_1.default.getFiles);
 // Update a file
-router.put('/files/:id', fileUpload_1.upload.array('file', 1), fileController_1.default.updateFile);
+router.put('/:id', fileUpload_1.upload.array('file', 1), fileController_1.default.updateFile);
 // Delete a file
-router.delete('/files/:id', fileController_1.default.deleteFile);
+router.delete('/:id', fileController_1.default.deleteFile);
 exports.default = router;
