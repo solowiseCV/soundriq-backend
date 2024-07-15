@@ -58,7 +58,7 @@ exports.logoutUser = logoutUser;
 const savePasswordResetToken = async (userId, token) => {
     const expirationTime = new Date();
     expirationTime.setMinutes(expirationTime.getMinutes() + 10); // Token expires in 10 minutes
-    await database_1.default.passwordResetToken.create({
+    const user = await database_1.default.passwordResetToken.create({
         data: {
             userId,
             token,
