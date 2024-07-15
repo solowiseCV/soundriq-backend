@@ -8,65 +8,80 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  artistProfile ArtistProfile?
 }
 
-model Artist {
-  id                Int      @id @default(autoincrement())
-  
+model ArtistProfile {
+  id String @id @default(uuid())
+
   // Personal Information
-  fullName          String
-  artistName        String?
-  email             String   @unique
-  dateOfBirth       String?   
-  password          String
- 
-  
+  artistName  String?
+  dateOfBirth String?
+
   // Media Links
-  profilePhoto      String?
-  bannerImage       String?
-  signatureSound    String?
-  
+  profilePhoto   String?
+  bannerImage    String?
+  signatureSound String?
+
   // Origin and Bio
-  countryOfOrigin   String?
-  bio               String?
-  
+  countryOfOrigin String?
+  bio             String?
+
   // Music Genre
-  musicGenre        String?
-  
+  musicGenre String?
+
   // Music Platform Addresses
   appleMusicAddress String?
   spotifyAddress    String?
   soundCloudAddress String?
   youtubeAddress    String?
-  
+
   // Social Media Addresses
-  instagramAddress  String?
-  tiktokAddress     String?
-  
+  instagramAddress String?
+  tiktokAddress    String?
+
   // Management
-  manager           String?
-  
+  manager String?
+
   // Timestamps
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Foreign Key
+  userId String? @unique
+  user   User?  @relation(fields: [userId], references: [id])
+  files   File[]
 
   @@index([artistName])
-  @@index([email])
 }
 
-
-
 model File {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(uuid())
   filename  String
   path      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
+  artist   ArtistProfile @relation(fields: [artistId], references: [userId])
+  artistId String
+}
+
+model BlacklistedToken {
+  id            String   @id @default(uuid())
+  token         String
+  blacklistedAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
