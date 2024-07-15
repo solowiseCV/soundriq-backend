@@ -29,9 +29,5 @@ const storage = multer_1.default.diskStorage({
         cb(null, Date.now() + "-" + file.originalname);
     },
 });
-exports.uploadFileMiddleware = (0, multer_1.default)({ storage: storage }).fields([
-    { name: 'profilePhoto' },
-    { name: 'bannerImage' },
-    { name: 'signatureSound' },
-]);
+exports.uploadFileMiddleware = (0, multer_1.default)({ storage: storage }).array("files", 10);
 exports.upload = (0, multer_1.default)({ storage: storage });

@@ -3,12 +3,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsers = exports.findUserByEmail = exports.createUser = void 0;
+exports.invalidateResetToken = exports.resetPassword = exports.findUserByPasswordResetToken = exports.savePasswordResetToken = exports.logoutUser = exports.getAllUsers = exports.findUserByEmail = exports.updateUser = exports.createUser = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const createUser = async (data) => {
-    return await database_1.default.user.create({ data });
+    const { artistProfile, ...userData } = data;
+    return await database_1.default.user.create({
+        data: {
+            ...userData,
+            artistProfile: artistProfile
+                ? {
+                    create: artistProfile,
+                }
+                : undefined,
+        },
+        include: { artistProfile: true },
+    });
 };
 exports.createUser = createUser;
+const updateUser = async (data) => {
+    const { artistProfile } = data;
+    return await database_1.default.user.update({
+        where: { id: data.id },
+        data: {
+            artistProfile: artistProfile
+                ? {
+                    update: {
+                        ...artistProfile,
+                    }
+                }
+                : undefined,
+        },
+        include: { artistProfile: true },
+    });
+};
+exports.updateUser = updateUser;
 const findUserByEmail = async (email) => {
     return await database_1.default.user.findUnique({ where: { email } });
 };
@@ -17,3 +45,52 @@ const getAllUsers = async () => {
     return await database_1.default.user.findMany();
 };
 exports.getAllUsers = getAllUsers;
+const logoutUser = async (token) => {
+    const blacklistedToken = await database_1.default.blacklistedToken.findFirst({
+        where: { token },
+    });
+    if (blacklistedToken) {
+        throw new Error("Logged out already!");
+    }
+    return await database_1.default.blacklistedToken.create({ data: { token } });
+};
+exports.logoutUser = logoutUser;
+const savePasswordResetToken = async (userId, token) => {
+    const expirationTime = new Date();
+    expirationTime.setMinutes(expirationTime.getMinutes() + 10); // Token expires in 10 minutes
+    await database_1.default.passwordResetToken.create({
+        data: {
+            userId,
+            token,
+            expiresAt: expirationTime,
+        },
+    });
+};
+exports.savePasswordResetToken = savePasswordResetToken;
+const findUserByPasswordResetToken = async (token) => {
+    const passwordResetToken = await database_1.default.passwordResetToken.findFirst({
+        where: { token },
+    });
+    if (!passwordResetToken) {
+        return null;
+    }
+    const user = await database_1.default.user.findUnique({
+        where: { id: passwordResetToken.userId },
+    });
+    return user;
+};
+exports.findUserByPasswordResetToken = findUserByPasswordResetToken;
+const resetPassword = async (userId, password) => {
+    await database_1.default.user.update({
+        where: { id: userId },
+        data: { password: password },
+    });
+};
+exports.resetPassword = resetPassword;
+const invalidateResetToken = async (token) => {
+    // fix this
+    await database_1.default.passwordResetToken.deleteMany({
+        where: { token: token },
+    });
+};
+exports.invalidateResetToken = invalidateResetToken;

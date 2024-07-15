@@ -1,13 +1,17 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const artistController_1 = __importDefault(require("../controllers/artistController"));
-const file_upload_1 = __importDefault(require("../middlewares/artist/file_upload"));
-const authenticate_1 = require("../middlewares/authenticate");
-const router = (0, express_1.Router)();
-router.post("/register", artistController_1.default.register);
-router.post("/complete-profile/", authenticate_1.authenticate, file_upload_1.default, artistController_1.default.completeProfile);
-exports.default = router;
+// import { Router } from "express";
+// import ArtistController from "../controllers/artistController";
+// import upload from "../middlewares/artist/file_upload";
+// import { authenticate } from "../middlewares/authenticate";
+// const router = Router();
+// router.post("/register", ArtistController.register);
+// router.post(
+//   "/complete-profile/",
+//   authenticate,
+//   upload,
+//   ArtistController.completeProfile
+// );
+// router.post("/logout", authenticate, ArtistController.logout);
+// router.post("/forgot-password", authenticate, ArtistController.forgotPassword);
+// router.post("/reset-password", ArtistController.resetPassword);
+// export default router;
