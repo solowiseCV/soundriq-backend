@@ -29,6 +29,23 @@ class FileController {
     }
   }
 
+  // get all artist
+  static async getAllArtist(req: Request, res: Response) {
+    try {
+      console.log("get all artist");
+      const artists = await FileService.getAllArtist();
+
+      if (!artists || artists.length === 0) {
+        return res.status(404).json({ error: "Artists not found" });
+      }
+
+      return res.status(200).json(artists);
+    } catch (error: any) {
+      console.error(error.message);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  }
+
   // get a single file
   static async getFile(req: Request, res: Response) {
     try {

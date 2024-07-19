@@ -29,16 +29,12 @@ class UserService {
       ...userData,
       password: hashedPassword,
       artistProfile: {
-        bio: "",
+        
       },
-    });
+    },
+  );
 
-    const userInfo = {
-      id: user.id,
-      email: user.email,
-    };
-
-    return userInfo;
+    return user;
   }
 
   static async loginUser(email: string, password: string) {
@@ -69,27 +65,6 @@ class UserService {
     };
 
     return { token, userInfo };
-  }
-
-  static async updateUser(userId: String, userData: any) {
-    const user = await updateUser({
-      ...userData,
-      artistProfile: {
-        ...userData,
-      },
-      id: userId,
-    });
-    return user;
-  }
-
-  static async getUser(email: string) {
-    const user = await findUserByEmail(email);
-    return user;
-  }
-
-  static async getAllUsers() {
-    const users = await getAllUsers();
-    return users;
   }
 
   static async logoutUser(token: string) {

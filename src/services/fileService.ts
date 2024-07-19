@@ -18,6 +18,8 @@ class FileService {
             data: {
               filename: file.filename,
               path: file.path,
+              coverImage: file.coverImage,
+              metadata: file.metadata,
               artistId: artistProfileId,
             },
             include: { artist: true },
@@ -29,6 +31,11 @@ class FileService {
       console.error(error.message);
       throw new Error("Failed to upload file");
     }
+  }
+
+  static async getAllArtist() {
+    const artists = await prisma.artistProfile.findMany();
+    return artists;
   }
 
   static async getFile(fileId: string) {
