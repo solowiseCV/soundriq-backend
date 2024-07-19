@@ -1,6 +1,7 @@
 import app from "./app";
-const port = require("./config/index").port;
+const PORT = require("./config/index").PORT;
+const HOST = require("./config/index").HOST;
 
-app.listen(port, () => {
-  console.log(`🚀 Server is running on port http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on ${HOST}:${PORT}`);
 });
