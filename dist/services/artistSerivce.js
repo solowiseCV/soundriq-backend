@@ -34,7 +34,7 @@ class ArtistService {
                     coverImage: coverImage.path,
                     metadata: metadata,
                 },
-                include: { artist: true },
+                // include: { artist: true },
             });
             return createdFiles;
         }
@@ -58,7 +58,7 @@ class ArtistService {
                         coverImage: coverImage.path,
                         metadata: metadata,
                     },
-                    include: { artist: true },
+                    // include: { artist: true },
                 });
             }));
             console.log("createdFiles", createdAlbums);
@@ -76,7 +76,6 @@ class ArtistService {
                     artistId: artistId,
                 },
                 include: {
-                    // ls
                     artist: true,
                 },
             });

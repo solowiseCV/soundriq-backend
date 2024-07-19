@@ -29,9 +29,6 @@ class ArtistController {
             profilePhoto = profilePhoto ? profilePhoto.filename : undefined;
             bannerImage = bannerImage ? bannerImage.filename : undefined;
             signatureSound = signatureSound ? signatureSound.filename : undefined;
-            console.log("profilePhoto", `/uploads/${profilePhoto}`);
-            console.log("bannerImage", `/uploads/${bannerImage}`);
-            console.log("signatureSound", `/uploads/${signatureSound}`);
             const data = {
                 artistName,
                 countryOfOrigin,
@@ -50,7 +47,6 @@ class ArtistController {
                 signatureSound,
             };
             const userId = req.userId;
-            // console.log("user Id", userId);
             const user = await artistSerivce_1.default.updateProfile(userId, data);
             res.json(user);
         }
@@ -59,8 +55,6 @@ class ArtistController {
         }
     }
     static async uploadSingle(req, res) {
-        // console.log("req body", req.body);
-        // console.log("req files", req.files);
         try {
             if (!req.files || !req.body.metadata) {
                 return res.status(400).json({ error: "No file or metadata uploaded" });
