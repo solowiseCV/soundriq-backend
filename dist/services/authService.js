@@ -20,15 +20,9 @@ class UserService {
         const user = await (0, userModel_1.createUser)({
             ...userData,
             password: hashedPassword,
-            artistProfile: {
-                bio: "",
-            },
+            artistProfile: {},
         });
-        const userInfo = {
-            id: user.id,
-            email: user.email,
-        };
-        return userInfo;
+        return user;
     }
     static async loginUser(email, password) {
         const user = await (0, userModel_1.findUserByEmail)(email);
@@ -48,24 +42,6 @@ class UserService {
             email: userCredential.email,
         };
         return { token, userInfo };
-    }
-    static async updateUser(userId, userData) {
-        const user = await (0, userModel_1.updateUser)({
-            ...userData,
-            artistProfile: {
-                ...userData,
-            },
-            id: userId,
-        });
-        return user;
-    }
-    static async getUser(email) {
-        const user = await (0, userModel_1.findUserByEmail)(email);
-        return user;
-    }
-    static async getAllUsers() {
-        const users = await (0, userModel_1.getAllUsers)();
-        return users;
     }
     static async logoutUser(token) {
         // Add token to blacklist

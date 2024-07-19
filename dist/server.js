@@ -4,7 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
-const port = require("./config/index").port;
-app_1.default.listen(port, () => {
-    console.log(`🚀 Server is running on port http://localhost:${port}`);
+const PORT = require("./config/index").PORT;
+const HOST = require("./config/index").HOST;
+app_1.default.listen(PORT, () => {
+    console.log(`🚀 Server is running on ${HOST}:${PORT}`);
 });

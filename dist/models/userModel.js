@@ -3,11 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.invalidateResetToken = exports.resetPassword = exports.findUserByPasswordResetToken = exports.savePasswordResetToken = exports.logoutUser = exports.getAllUsers = exports.findUserByEmail = exports.updateUser = exports.createUser = void 0;
+exports.invalidateResetToken = exports.resetPassword = exports.findUserByPasswordResetToken = exports.savePasswordResetToken = exports.logoutUser = exports.getAllArtists = exports.getAllUsers = exports.findUserByEmail = exports.updateUser = exports.createUser = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const createUser = async (data) => {
     const { artistProfile, ...userData } = data;
-    return await database_1.default.user.create({
+    const user = await database_1.default.user.create({
         data: {
             ...userData,
             artistProfile: artistProfile
@@ -16,8 +16,9 @@ const createUser = async (data) => {
                 }
                 : undefined,
         },
-        include: { artistProfile: true },
+        // include: { artistProfile: true },
     });
+    return user;
 };
 exports.createUser = createUser;
 const updateUser = async (data) => {
@@ -45,6 +46,10 @@ const getAllUsers = async () => {
     return await database_1.default.user.findMany();
 };
 exports.getAllUsers = getAllUsers;
+const getAllArtists = async () => {
+    return await database_1.default.artistProfile.findMany();
+};
+exports.getAllArtists = getAllArtists;
 const logoutUser = async (token) => {
     const blacklistedToken = await database_1.default.blacklistedToken.findFirst({
         where: { token },

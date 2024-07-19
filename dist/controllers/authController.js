@@ -7,7 +7,7 @@ const authService_1 = __importDefault(require("../services/authService"));
 class UserController {
     static async registerUser(req, res) {
         try {
-            const { email, password } = req.body;
+            const { name, email, password, dateOfBirth } = req.body;
             if (!email || !password) {
                 throw new Error("Email and password are required");
             }
@@ -35,66 +35,6 @@ class UserController {
         }
         catch (error) {
             res.status(400).json({ error: error.message });
-        }
-    }
-    static async updateUser(req, res) {
-        try {
-            const { artistName, countryOfOrigin, bio, dateOfBirth, musicGenre, appleMusicAddress, spotifyAddress, soundCloudAddress, youtubeAddress, instagramAddress, tiktokAddress, manager, } = req.body;
-            const files = req.files;
-            const profilePhoto = (files === null || files === void 0 ? void 0 : files.profilePhoto)
-                ? files.profilePhoto[0].path
-                : "";
-            const bannerImage = (files === null || files === void 0 ? void 0 : files.bannerImage) ? files.bannerImage[0].path : "";
-            const signatureSound = (files === null || files === void 0 ? void 0 : files.signatureSound)
-                ? files.signatureSound[0].path
-                : "";
-            const data = {
-                artistName,
-                countryOfOrigin,
-                bio,
-                dateOfBirth,
-                musicGenre,
-                appleMusicAddress,
-                spotifyAddress,
-                soundCloudAddress,
-                youtubeAddress,
-                instagramAddress,
-                tiktokAddress,
-                manager,
-                profilePhoto,
-                bannerImage,
-                signatureSound,
-            };
-            const userId = req.userId;
-            // console.log("user Id", userId);
-            const user = await authService_1.default.updateUser(userId, data);
-            res.json(user);
-        }
-        catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-    static async getUser(req, res) {
-        try {
-            const user = await authService_1.default.getUser(req.params.email);
-            if (user) {
-                res.json(user);
-            }
-            else {
-                res.status(404).json({ error: "User not found" });
-            }
-        }
-        catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-    static async getAllUsers(req, res) {
-        try {
-            const users = await authService_1.default.getAllUsers();
-            res.json(users);
-        }
-        catch (error) {
-            res.status(500).json({ error: error.message });
         }
     }
     static async logout(req, res) {
