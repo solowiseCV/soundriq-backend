@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const artistSerivce_1 = __importDefault(require("../services/artistSerivce"));
+const cloudinary_1 = require("../utils/cloudinary");
 class ArtistController {
     static async updateProfile(req, res) {
         try {
@@ -21,14 +22,34 @@ class ArtistController {
                 profilePhoto = files["profilePhoto"]
                     ? files["profilePhoto"][0]
                     : undefined;
-                bannerImage = files["bannerImage"] ? files["bannerImage"][0] : undefined;
+                bannerImage = files["bannerImage"]
+                    ? files["bannerImage"][0]
+                    : undefined;
                 signatureSound = files["signatureSound"]
                     ? files["signatureSound"][0]
                     : undefined;
             }
-            profilePhoto = profilePhoto ? profilePhoto.filename : undefined;
-            bannerImage = bannerImage ? bannerImage.filename : undefined;
-            signatureSound = signatureSound ? signatureSound.filename : undefined;
+            const filesToUpload = [
+                (profilePhoto === null || profilePhoto === void 0 ? void 0 : profilePhoto.path)
+                    ? { path: profilePhoto.path, folder: "profile/" }
+                    : null,
+                (signatureSound === null || signatureSound === void 0 ? void 0 : signatureSound.path)
+                    ? { path: signatureSound.path, folder: "signature/" }
+                    : null,
+                (bannerImage === null || bannerImage === void 0 ? void 0 : bannerImage.path)
+                    ? { path: bannerImage.path, folder: "banner/" }
+                    : null,
+            ].filter((file) => file !== null);
+            await (0, cloudinary_1.uploadFilesToCloudinary)(filesToUpload)
+                .then((urls) => {
+                const [profilePhotoUrl, signatureSoundUrl, bannerImageUrl] = urls;
+                profilePhoto = profilePhotoUrl;
+                bannerImage = bannerImageUrl;
+                signatureSound = signatureSoundUrl;
+            })
+                .catch((err) => {
+                console.error(`File upload error: ${err.message}`);
+            });
             const data = {
                 artistName,
                 countryOfOrigin,
@@ -56,6 +77,7 @@ class ArtistController {
     }
     static async uploadSingle(req, res) {
         try {
+            console.log(req.files, req.body.metadata);
             if (!req.files || !req.body.metadata) {
                 return res.status(400).json({ error: "No file or metadata uploaded" });
             }
