@@ -1,7 +1,7 @@
 import { Router } from "express";
 import ArtistController from "../controllers/artistController";
 import { authenticate } from "../middlewares/authenticate";
-import { uploadFileMiddleware, upload } from "../middlewares/fileUpload";
+import { upload } from "../middlewares/fileUpload";
 
 const router = Router();
 
@@ -35,6 +35,9 @@ router.post(
   ]),
   ArtistController.uploadSingle
 );
+router.get("/singles", authenticate, ArtistController.getSingles);
+router.get("/singles/:id", authenticate, ArtistController.getSinglesByArtist);
+router.get("/albums", authenticate, ArtistController.getAlbums);
 router.get("/albums/:id", authenticate, ArtistController.getAlbumsByArtist);
 router.post(
   "/album",

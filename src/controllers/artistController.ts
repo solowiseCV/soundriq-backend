@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import ArtistService from "../services/artistSerivce";
 import { MulterFile } from "../types/fileTypes";
+import { uploadFilesToCloudinary } from "../utils/cloudinary";
 
 class ArtistController {
   static async updateProfile(req: Request, res: Response) {
@@ -20,7 +21,6 @@ class ArtistController {
         manager,
       } = req.body;
 
-      
       let profilePhoto: any;
       let bannerImage: any;
       let signatureSound: any;
@@ -30,21 +30,44 @@ class ArtistController {
       if (Array.isArray(files)) {
         profilePhoto = files.find((file) => file.fieldname === "profilePhoto");
         bannerImage = files.find((file) => file.fieldname === "bannerImage");
-        signatureSound = files.find((file) => file.fieldname === "signatureSound");
+        signatureSound = files.find(
+          (file) => file.fieldname === "signatureSound"
+        );
       } else {
         profilePhoto = files["profilePhoto"]
           ? files["profilePhoto"][0]
           : undefined;
-        bannerImage = files["bannerImage"] ? files["bannerImage"][0] : undefined;
+        bannerImage = files["bannerImage"]
+          ? files["bannerImage"][0]
+          : undefined;
         signatureSound = files["signatureSound"]
           ? files["signatureSound"][0]
           : undefined;
       }
 
-    profilePhoto = profilePhoto ? profilePhoto.filename : undefined;
-    bannerImage = bannerImage ? bannerImage.filename : undefined;
-    signatureSound = signatureSound ? signatureSound.filename : undefined;
+      const filesToUpload = [
+        profilePhoto?.path
+          ? { path: profilePhoto.path, folder: "profile/" }
+          : null,
+        signatureSound?.path
+          ? { path: signatureSound.path, folder: "signature/" }
+          : null,
+        bannerImage?.path
+          ? { path: bannerImage.path, folder: "banner/" }
+          : null,
+      ].filter((file) => file !== null);
 
+      await uploadFilesToCloudinary(filesToUpload)
+        .then((urls) => {
+          const [profilePhotoUrl, signatureSoundUrl, bannerImageUrl] = urls;
+          profilePhoto = profilePhotoUrl;
+          bannerImage = bannerImageUrl;
+          signatureSound = signatureSoundUrl;
+        })
+        .catch((err) => {
+          console.error(`File upload error: ${err.message}`);
+        });
+        
       const data = {
         artistName,
         countryOfOrigin,
@@ -155,6 +178,35 @@ class ArtistController {
     } catch (error: any) {
       console.error(error.message);
       return res.status(500).json({ error: "Internal server error" });
+    }
+  }
+
+
+  static async getSingles(req: Request, res: Response) {
+    try {
+      const singles = await ArtistService.getSingles();
+      res.json(singles);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async getSinglesByArtist(req: Request, res: Response) {
+    try {
+      const artistId = req.params.id;
+      const singles = await ArtistService.getSinglesByArtist(artistId);
+      res.json(singles);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async getAlbums(req: Request, res: Response) {
+    try {
+      const albums = await ArtistService.getAlbums();
+      res.json(albums);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
   }
 

@@ -8,6 +8,7 @@ import prisma from "../config/database";
 import mime from "mime-types";
 
 class ArtistService {
+  // function to update artist profile
   static async updateProfile(userId: String, userData: any) {
     const user = await updateUser({
       ...userData,
@@ -53,6 +54,7 @@ class ArtistService {
     }
   }
 
+  // function to upload album
   static async uploadAlbum(
     artistProfileId: string,
     coverImage: any,
@@ -81,7 +83,7 @@ class ArtistService {
         })
       );
 
-      console.log("createdFiles", createdAlbums);
+      // console.log("createdFiles", createdAlbums);
 
       return createdAlbums;
     } catch (error: any) {
@@ -90,6 +92,55 @@ class ArtistService {
     }
   }
 
+  // function to get singles by artist
+  static async getSinglesByArtist(artistId: string) {
+    try {
+      const files = await prisma.file.findMany({
+        where: {
+          artistId: artistId,
+        },
+        include: {
+          artist: true,
+        },
+      });
+      return files;
+    } catch (error: any) {
+      console.error(error.message);
+      throw new Error("Unable to retrieve files");
+    }
+  }
+
+  // function to get all singles
+  static async getSingles() {
+    try {
+      const files = await prisma.file.findMany({
+        include: {
+          artist: true,
+        },
+      });
+      return files;
+    } catch (error: any) {
+      console.error(error.message);
+      throw new Error("Unable to retrieve files");
+    }
+  }
+
+  // function to get all albums
+  static async getAlbums() {
+    try {
+      const albums = await prisma.album.findMany({
+        include: {
+          artist: true,
+        },
+      });
+      return albums;
+    } catch (error: any) {
+      console.error(error.message);
+      throw new Error("Unable to retrieve albums");
+    }
+  }
+
+  // function to get albums by artist
   static async getAlbumsByArtist(artistId: string) {
     try {
       const albums = await prisma.album.findMany({
@@ -107,11 +158,13 @@ class ArtistService {
     }
   }
 
+  // function to get all artists
   static async getArtists() {
     const artists = await getAllArtists();
     return artists;
   }
 
+  // function to get artist by id
   static async getArtist(artistId: string) {
     const artist = await prisma.artistProfile.findUnique({
       where: { id: artistId },
@@ -119,11 +172,13 @@ class ArtistService {
     return artist;
   }
 
+  // function to get user by email
   static async getUser(email: string) {
     const user = await findUserByEmail(email);
     return user;
   }
 
+  // function to get all users
   static async getAllUsers() {
     const users = await getAllUsers();
     return users;
