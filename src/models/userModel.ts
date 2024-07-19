@@ -1,6 +1,10 @@
-import prisma, { User, BlacklistedToken } from "../config/database";
+import prisma, { User, BlacklistedToken, ArtistProfile } from "../config/database";
 
 type CreateUserInput = Omit<User, "createdAt" | "updatedAt"> & {
+  name: string;
+  email: string;
+  password: string;
+  dateOfBirth: string;
   artistProfile?: {
     fullName?: string;
     artistName?: string;
@@ -26,7 +30,7 @@ export const createUser = async (
 ): Promise<User> => {
   const { artistProfile, ...userData } = data;
 
-  return await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       ...userData,
       artistProfile: artistProfile
@@ -35,8 +39,11 @@ export const createUser = async (
           }
         : undefined,
     },
-    include: { artistProfile: true },
+    // include: { artistProfile: true },
   });
+
+  return user;
+
 };
 
 export const updateUser = async (
@@ -69,6 +76,10 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
 export const getAllUsers = async (): Promise<User[]> => {
   return await prisma.user.findMany();
 };
+
+export const getAllArtists = async (): Promise<ArtistProfile[]> => {
+  return await prisma.artistProfile.findMany();
+}
 
 export const logoutUser = async (token: string): Promise<BlacklistedToken> => {
   const blacklistedToken = await prisma.blacklistedToken.findFirst({
