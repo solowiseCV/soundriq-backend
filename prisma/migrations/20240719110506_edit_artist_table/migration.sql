@@ -36,6 +36,20 @@ CREATE TABLE "ArtistProfile" (
 );
 
 -- CreateTable
+CREATE TABLE "Album" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "path" TEXT NOT NULL,
+    "artistId" TEXT NOT NULL,
+    "coverImage" TEXT NOT NULL,
+    "metadata" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Album_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "File" (
     "id" TEXT NOT NULL,
     "filename" TEXT NOT NULL,
@@ -80,6 +94,9 @@ CREATE INDEX "ArtistProfile_artistName_idx" ON "ArtistProfile"("artistName");
 
 -- AddForeignKey
 ALTER TABLE "ArtistProfile" ADD CONSTRAINT "ArtistProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Album" ADD CONSTRAINT "Album_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "ArtistProfile"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "File" ADD CONSTRAINT "File_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "ArtistProfile"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
