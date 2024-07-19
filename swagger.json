@@ -390,7 +390,7 @@
           {
             "name": "singleData",
             "in": "body",
-            "description": "Single data including title, genre, release date and artist ID",
+            "description": "Single data",
             "required": true,
             "schema": {
               "type": "object",
