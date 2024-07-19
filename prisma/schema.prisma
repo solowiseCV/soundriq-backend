@@ -11,6 +11,7 @@ model User {
   id            String         @id @default(uuid())
   name          String
   email         String         @unique
+  dateOfBirth   String?
   password      String
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -21,8 +22,7 @@ model ArtistProfile {
   id String @id @default(uuid())
 
   // Personal Information
-  artistName  String?
-  dateOfBirth String?
+  artistName String?
 
   // Media Links
   profilePhoto   String?
@@ -55,18 +55,33 @@ model ArtistProfile {
 
   // Foreign Key
   userId String? @unique
-  user   User?  @relation(fields: [userId], references: [id])
-  files   File[]
+  user   User?   @relation(fields: [userId], references: [id])
+  files  File[]
+  albums Album[]
 
   @@index([artistName])
 }
 
+model Album {
+  id         String        @id @default(uuid())
+  title      String
+  path       String
+  artistId   String
+  artist     ArtistProfile @relation(fields: [artistId], references: [userId])
+  coverImage String
+  metadata   Json
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
 model File {
-  id        String      @id @default(uuid())
-  filename  String
-  path      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  filename   String
+  path       String
+  coverImage String
+  metadata   Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   artist   ArtistProfile @relation(fields: [artistId], references: [userId])
   artistId String
