@@ -8,6 +8,9 @@ const router = Router();
 // upload a file/s
 router.post("/upload", authenticate, upload.array('file', 2), FileController.uploadFile);
 
+// view all artist
+router.get('/artist', FileController.getAllArtist);
+
 // View a file
 router.get('/:id', authenticate, FileController.getFile);
 
