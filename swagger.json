@@ -13,7 +13,7 @@
     }
   },
   "paths": {
-    "/user/register": {
+    "/auth/register": {
       "post": {
         "summary": "Register a new user",
         "description": "Register a new user with email and name",
@@ -41,6 +41,10 @@
                   "type": "string",
                   "example": "John Doe"
                 },
+                "dateOfBirth": {
+                  "type": "string",
+                  "example": "21-10-2000"
+                },
                 "password": {
                   "type": "string",
                   "example": "password123"
@@ -48,7 +52,8 @@
               },
               "required": [
                 "email",
-                "name"
+                "name",
+                "password"
               ]
             }
           }
@@ -109,8 +114,103 @@
         }
       }
     },
-    "/auth/update": {
+    "/auth/logout": {
       "post": {
+        "summary": "Logout a user",
+        "description": "Logout a user from the system",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged out successfully"
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "summary": "Forgot password",
+        "description": "Send a password reset link to the user's email",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "body",
+            "description": "Email address of the user",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john@example.com",
+                  "required": true,
+                  "description": "Email address of the user"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password reset link sent successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "/auth/reset-password": {
+        "post": {
+          "summary": "Reset password",
+          "description": "Reset the user's password with a new one",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "resetData",
+              "in": "body",
+              "description": "Reset data including email, token and new password",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                 "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              },
+              "required": [
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password reset successful"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/artist/profile": {
+      "put": {
         "summary": "Complete Artist Profile",
         "security": [
           {
@@ -216,20 +316,46 @@
         }
       }
     },
-    "/user": {
+    "/artist/profile/{artistId}": {
       "get": {
-        "summary": "Get all users",
-        "description": "Retrieve a list of all registered users",
+        "summary": "Get Artist Profile",
+        "description": "Retrieve an artist's profile by their ID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "artistId",
+            "in": "path",
+            "description": "ID of the artist to retrieve",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist found"
+          },
+          "404": {
+            "description": "Artist not found"
+          }
+        }
+      }
+    },
+    "/artist/profile/": {
+      "get": {
+        "summary": "Get all artists",
+        "description": "Retrieve a list of all registered artists",
         "produces": [
           "application/json"
         ],
         "responses": {
           "200": {
-            "description": "List of users retrieved successfully",
+            "description": "List of artists retrieved successfully",
             "schema": {
               "type": "object",
               "properties": {
-                "users": {
+                "artists": {
                   "type": "array",
                   "items": {}
                 }
@@ -237,41 +363,16 @@
             }
           },
           "404": {
-            "description": "No users found"
+            "description": "No artists found"
           }
         }
       }
+    }
     },
-    "/auth/find/{email}": {
-      "get": {
-        "summary": "Get user by email",
-        "description": "Retrieve a user by their email address",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "description": "Email address of the user to retrieve",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User found"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-    "/files/upload": {
+    "/artist/single": {
       "post": {
-        "summary": "Upload a file",
-        "description": "Upload a file to the server",
+        "summary": "Upload a single",
+        "description": "Upload a single music track",
         "consumes": [
           "multipart/form-data"
         ],
@@ -280,19 +381,206 @@
         ],
         "parameters": [
           {
-            "name": "file",
+            "name": "singleData",
+            "in": "body",
+            "description": "Single data including title, genre, release date and artist ID",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "example": "My Song"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "single",
             "in": "formData",
-            "description": "The file to upload",
+            "description": "The single file to upload",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "coverImage",
+            "in": "formData",
+            "description": "Cover image for the single",
             "required": true,
             "type": "file"
           }
         ],
         "responses": {
           "200": {
-            "description": "File uploaded successfully"
+            "description": "Single uploaded successfully"
           },
           "400": {
             "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/artist/album": {
+      "post": {
+        "summary": "Upload an album",
+        "description": "Upload an album with multiple tracks",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "albumData",
+            "in": "body",
+            "description": "Album data including title, genre, release date and artist ID",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "example": "My Album"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "albumFiles",
+            "in": "formData",
+            "description": "The tracks to upload",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "albumCover",
+            "in": "formData",
+            "description": "Cover image for the album",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album uploaded successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/artist/singles": {
+      "get": {
+        "summary": "Get all singles",
+        "description": "Retrieve a list of all singles uploaded by artists",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of singles retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "singles": {
+                  "type": "array",
+                  "items": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No singles found"
+          }
+        }
+      }
+    },
+    "/artist/albums": {
+      "get": {
+        "summary": "Get all albums",
+        "description": "Retrieve a list of all albums uploaded by artists",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of albums retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "albums": {
+                  "type": "array",
+                  "items": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No albums found"
+          }
+        }
+      }
+    },
+    "/artist/singles/{singleId}": {
+      "get": {
+        "summary": "Get a single",
+        "description": "Retrieve a single by its ID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "singleId",
+            "in": "path",
+            "description": "ID of the single to retrieve",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single found"
+          },
+          "404": {
+            "description": "Single not found"
+          }
+        }
+      }
+    },
+    "/artist/albums/{albumId}": {
+      "get": {
+        "summary": "Get an album",
+        "description": "Retrieve an album by its ID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "description": "ID of the album to retrieve",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album found"
+          },
+          "404": {
+            "description": "Album not found"
           }
         }
       }
