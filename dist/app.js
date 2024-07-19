@@ -21,7 +21,7 @@ app.use((0, express_session_1.default)({
     secret: "your-secret-key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // Set to true if using HTTPS
+    cookie: { secure: false },
 }));
 app.use("/auth", authRoutes_1.default);
 app.use("/artist", artistRoutes_1.default);
