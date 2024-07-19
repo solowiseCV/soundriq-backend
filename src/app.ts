@@ -4,7 +4,6 @@ import cors from "cors";
 import status from "./routes/status";
 import authRouter from "./routes/authRoutes";
 import artistRouter from "./routes/artistRoutes";
-import fileRouter from "./routes/fileRoutes";
 import errorHandler from "./middlewares/errorHandler";
 import setupSwagger from "./swagger/swagger";
 
@@ -19,7 +18,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRouter);
 app.use("/artist", artistRouter);
 app.use("/", status);
-app.use("/files", fileRouter);
 
 setupSwagger(app);
 
