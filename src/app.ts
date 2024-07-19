@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import session from "express-session";
 import status from "./routes/status";
 import authRouter from "./routes/authRoutes";
 import artistRouter from "./routes/artistRoutes";
@@ -14,6 +15,15 @@ app.use(cors());
 
 // Middleware to parse URL-encoded data 
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  session({
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set to true if using HTTPS
+  })
+);
 
 app.use("/auth", authRouter);
 app.use("/artist", artistRouter);
