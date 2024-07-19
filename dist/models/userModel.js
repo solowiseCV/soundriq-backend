@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.invalidateResetToken = exports.resetPassword = exports.findUserByPasswordResetToken = exports.savePasswordResetToken = exports.logoutUser = exports.getAllArtists = exports.getAllUsers = exports.findUserByEmail = exports.updateUser = exports.createUser = void 0;
+exports.invalidateResetToken = exports.resetPassword = exports.findUserByPasswordResetToken = exports.savePasswordResetToken = exports.logoutUser = exports.getAllArtists = exports.getAllUsers = exports.findUserByEmail = exports.findArtistByUserId = exports.updateUser = exports.createUser = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const createUser = async (data) => {
     const { artistProfile, ...userData } = data;
@@ -38,6 +38,10 @@ const updateUser = async (data) => {
     });
 };
 exports.updateUser = updateUser;
+const findArtistByUserId = async (userId) => {
+    return await database_1.default.artistProfile.findFirst({ where: { userId } });
+};
+exports.findArtistByUserId = findArtistByUserId;
 const findUserByEmail = async (email) => {
     return await database_1.default.user.findUnique({ where: { email } });
 };
