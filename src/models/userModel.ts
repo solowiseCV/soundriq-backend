@@ -69,6 +69,10 @@ export const updateUser = async (
   );
 }
 
+export const findArtistByUserId = async (userId: string): Promise<ArtistProfile | null> => {
+  return await prisma.artistProfile.findFirst({ where: { userId } });
+}
+
 export const findUserByEmail = async (email: string): Promise<User | null> => {
   return await prisma.user.findUnique({ where: { email } });
 };
