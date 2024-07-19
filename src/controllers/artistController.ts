@@ -73,6 +73,7 @@ class ArtistController {
 
   static async uploadSingle(req: Request, res: Response) {
     try {
+      console.log(req.files, req.body.metadata);
       if (!req.files || !req.body.metadata) {
         return res.status(400).json({ error: "No file or metadata uploaded" });
       }
