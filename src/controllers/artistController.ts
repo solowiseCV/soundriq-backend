@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import ArtistService from "../services/artistSerivce";
+import { findArtistByUserId } from "../models/userModel";
 import { MulterFile } from "../types/fileTypes";
 import { uploadFilesToCloudinary } from "../utils/cloudinary";
+import mime from "mime-types";
+import path from "path";
 
 class ArtistController {
   static async updateProfile(req: Request, res: Response) {
@@ -67,7 +70,7 @@ class ArtistController {
         .catch((err) => {
           console.error(`File upload error: ${err.message}`);
         });
-        
+
       const data = {
         artistName,
         countryOfOrigin,
@@ -88,6 +91,9 @@ class ArtistController {
 
       const userId = req.userId as string;
       const user = await ArtistService.updateProfile(userId, data);
+      const result = await findArtistByUserId(userId);
+      const artistId = result?.id;
+      req.session.artistId = artistId; // Store artistId in session
       res.json(user);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -96,13 +102,13 @@ class ArtistController {
 
   static async uploadSingle(req: Request, res: Response) {
     try {
-      console.log(req.files, req.body.metadata);
       if (!req.files || !req.body.metadata) {
         return res.status(400).json({ error: "No file or metadata uploaded" });
       }
 
       let singleFile: any;
       let coverImage: any;
+      let singleFileUrl: any;
 
       if (Array.isArray(req.files)) {
         singleFile = req.files.find((file) => file.fieldname === "single");
@@ -114,7 +120,17 @@ class ArtistController {
           : undefined;
       }
 
+      // Determine the file type
+      const singleType = singleFile && mime.lookup(singleFile.filename);
+      const coverImageType = coverImage && mime.lookup(coverImage.filename);
+
+      if (!singleType || !coverImageType) {
+        throw new Error("Unable to determine file type");
+      }
+
+      const artistId = req.session.artistId as string;
       const userId = req.userId as string;
+
       const metadata = JSON.parse(req.body.metadata);
 
       if (!singleFile || !coverImage) {
@@ -122,6 +138,27 @@ class ArtistController {
           .status(400)
           .json({ error: "Single file or cover image missing" });
       }
+
+      // save to cloudinary
+      const filesToUpload = [
+        { path: singleFile.path, folder: "singles/" },
+        { path: coverImage.path, folder: "cover/" },
+      ];
+
+      await uploadFilesToCloudinary(filesToUpload)
+        .then((urls) => {
+          const [singleUrl, coverUrl] = urls;
+          singleFileUrl = singleUrl;
+          coverImage = coverUrl;
+        })
+        .catch((err) => {
+          console.error(`File upload error: ${err.message}`);
+        });
+
+      singleFile = {
+        filename: singleFile.filename,
+        path: singleFileUrl,
+      };
 
       const fileId = await ArtistService.uploadSingle(
         userId,
@@ -147,6 +184,7 @@ class ArtistController {
 
       let albumCover: any;
       let albumFiles: any[] = [];
+      let albumFilesUrl: any[] = [];
 
       if (Array.isArray(req.files)) {
         albumCover = req.files.find((file) => file.fieldname === "albumCover");
@@ -160,15 +198,44 @@ class ArtistController {
         albumFiles = req.files["albumFiles"] ? req.files["albumFiles"] : [];
       }
 
-      const userId = req.userId as string;
+      const artistId = req.session.artistId as string;
       const metadata = JSON.parse(req.body.metadata);
 
       if (!albumCover || albumFiles.length === 0) {
         return res.status(400).json({ error: "Album cover or files missing" });
       }
 
+      const albumCoverType = albumCover && mime.lookup(albumCover.filename);
+
+      if (!albumCoverType) {
+        throw new Error("Unable to determine file type");
+      }
+
+      // save to cloudinary
+      const filesToUpload = [
+        { path: albumCover.path, folder: "cover/" },
+        ...albumFiles.map((file) => ({ path: file.path, folder: "albums/" })),
+      ];
+
+      await uploadFilesToCloudinary(filesToUpload)
+        .then((urls) => {
+          albumCover = urls[0];
+          albumFilesUrl = urls.slice(1);
+        })
+        .catch((err) => {
+          console.error(`File upload error: ${err.message}`);
+        });
+
+       albumFiles = albumFiles.map((file, index) => ({
+        filename: file.filename,
+        path: albumFilesUrl[index],
+      }));
+
+        console.log("albumFiles", albumFiles);
+        console.log("albumCover", albumCover);
+
       const fileId = await ArtistService.uploadAlbum(
-        userId,
+        artistId,
         albumCover,
         albumFiles,
         metadata
@@ -180,7 +247,6 @@ class ArtistController {
       return res.status(500).json({ error: "Internal server error" });
     }
   }
-
 
   static async getSingles(req: Request, res: Response) {
     try {

@@ -21,27 +21,19 @@ class ArtistService {
   }
 
   static async uploadSingle(
-    artistProfileId: string,
+    artistId: string,
     singleFile: any,
     coverImage: any,
     metadata: any
   ) {
     try {
-      // Determine the file type
-      const singleType = singleFile && mime.lookup(singleFile.filename);
-      const coverImageType = coverImage && mime.lookup(coverImage.filename);
-
-      if (!singleType || !coverImageType) {
-        throw new Error("Unable to determine file type");
-      }
-
       // create a single file with the cover and metadata info to the artist
       const createdFiles = await prisma.file.create({
         data: {
           filename: singleFile.filename,
           path: singleFile.path,
-          artistId: artistProfileId,
-          coverImage: coverImage.path,
+          artistId: artistId,
+          coverImage: coverImage,
           metadata: metadata,
         },
         // include: { artist: true },
@@ -56,27 +48,39 @@ class ArtistService {
 
   // function to upload album
   static async uploadAlbum(
-    artistProfileId: string,
+    artistId: string,
     coverImage: any,
     albumFiles: any,
     metadata: any
   ) {
     try {
-      const coverImageType = coverImage && mime.lookup(coverImage.filename);
+      console.log(artistId);
+      // Check if artistId exists
+      const artistProfile = await prisma.artistProfile.findUnique({
+        where: { id: artistId },
+      });
 
-      if (!coverImageType) {
-        throw new Error("Unable to determine file type");
+      if (!artistProfile) {
+        throw new Error("Artist profile not found");
       }
 
-      const createdAlbums = await Promise.all(
+      // Create album entry
+      const album = await prisma.album.create({
+        data: {
+          title: metadata.title,
+          coverImage: coverImage,
+          metadata: metadata,
+          artistId: artistId,
+        },
+      });
+
+      const createdTracks = await Promise.all(
         albumFiles.map(async (file: any) => {
-          return prisma.album.create({
+          return prisma.track.create({
             data: {
               title: file.filename,
               path: file.path,
-              artistId: artistProfileId,
-              coverImage: coverImage.path,
-              metadata: metadata,
+              albumId: album.id,
             },
             // include: { artist: true },
           });
@@ -85,7 +89,7 @@ class ArtistService {
 
       // console.log("createdFiles", createdAlbums);
 
-      return createdAlbums;
+      return { album, createdTracks };
     } catch (error: any) {
       console.error(error.message);
       throw new Error("Failed to upload file");
@@ -130,7 +134,13 @@ class ArtistService {
     try {
       const albums = await prisma.album.findMany({
         include: {
-          artist: true,
+          artist: {
+            select: {
+              artistName: true,
+              id: true,
+              
+            },
+          }
         },
       });
       return albums;
