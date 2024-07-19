@@ -4,7 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const artistSerivce_1 = __importDefault(require("../services/artistSerivce"));
+const userModel_1 = require("../models/userModel");
 const cloudinary_1 = require("../utils/cloudinary");
+const mime_types_1 = __importDefault(require("mime-types"));
 class ArtistController {
     static async updateProfile(req, res) {
         try {
@@ -69,6 +71,9 @@ class ArtistController {
             };
             const userId = req.userId;
             const user = await artistSerivce_1.default.updateProfile(userId, data);
+            const result = await (0, userModel_1.findArtistByUserId)(userId);
+            const artistId = result === null || result === void 0 ? void 0 : result.id;
+            req.session.artistId = artistId; // Store artistId in session
             res.json(user);
         }
         catch (error) {
@@ -77,12 +82,12 @@ class ArtistController {
     }
     static async uploadSingle(req, res) {
         try {
-            console.log(req.files, req.body.metadata);
             if (!req.files || !req.body.metadata) {
                 return res.status(400).json({ error: "No file or metadata uploaded" });
             }
             let singleFile;
             let coverImage;
+            let singleFileUrl;
             if (Array.isArray(req.files)) {
                 singleFile = req.files.find((file) => file.fieldname === "single");
                 coverImage = req.files.find((file) => file.fieldname === "coverImage");
@@ -93,6 +98,13 @@ class ArtistController {
                     ? req.files["coverImage"][0]
                     : undefined;
             }
+            // Determine the file type
+            const singleType = singleFile && mime_types_1.default.lookup(singleFile.filename);
+            const coverImageType = coverImage && mime_types_1.default.lookup(coverImage.filename);
+            if (!singleType || !coverImageType) {
+                throw new Error("Unable to determine file type");
+            }
+            const artistId = req.session.artistId;
             const userId = req.userId;
             const metadata = JSON.parse(req.body.metadata);
             if (!singleFile || !coverImage) {
@@ -100,6 +112,24 @@ class ArtistController {
                     .status(400)
                     .json({ error: "Single file or cover image missing" });
             }
+            // save to cloudinary
+            const filesToUpload = [
+                { path: singleFile.path, folder: "singles/" },
+                { path: coverImage.path, folder: "cover/" },
+            ];
+            await (0, cloudinary_1.uploadFilesToCloudinary)(filesToUpload)
+                .then((urls) => {
+                const [singleUrl, coverUrl] = urls;
+                singleFileUrl = singleUrl;
+                coverImage = coverUrl;
+            })
+                .catch((err) => {
+                console.error(`File upload error: ${err.message}`);
+            });
+            singleFile = {
+                filename: singleFile.filename,
+                path: singleFileUrl,
+            };
             const fileId = await artistSerivce_1.default.uploadSingle(userId, singleFile, coverImage, metadata);
             return res.status(201).json(fileId);
             // console.log("fileId", fileId);
@@ -116,6 +146,7 @@ class ArtistController {
             }
             let albumCover;
             let albumFiles = [];
+            let albumFilesUrl = [];
             if (Array.isArray(req.files)) {
                 albumCover = req.files.find((file) => file.fieldname === "albumCover");
                 albumFiles = req.files.filter((file) => file.fieldname === "albumFiles");
@@ -126,17 +157,68 @@ class ArtistController {
                     : undefined;
                 albumFiles = req.files["albumFiles"] ? req.files["albumFiles"] : [];
             }
-            const userId = req.userId;
+            const artistId = req.session.artistId;
             const metadata = JSON.parse(req.body.metadata);
             if (!albumCover || albumFiles.length === 0) {
                 return res.status(400).json({ error: "Album cover or files missing" });
             }
-            const fileId = await artistSerivce_1.default.uploadAlbum(userId, albumCover, albumFiles, metadata);
+            const albumCoverType = albumCover && mime_types_1.default.lookup(albumCover.filename);
+            if (!albumCoverType) {
+                throw new Error("Unable to determine file type");
+            }
+            // save to cloudinary
+            const filesToUpload = [
+                { path: albumCover.path, folder: "cover/" },
+                ...albumFiles.map((file) => ({ path: file.path, folder: "albums/" })),
+            ];
+            await (0, cloudinary_1.uploadFilesToCloudinary)(filesToUpload)
+                .then((urls) => {
+                albumCover = urls[0];
+                albumFilesUrl = urls.slice(1);
+            })
+                .catch((err) => {
+                console.error(`File upload error: ${err.message}`);
+            });
+            albumFiles = albumFiles.map((file, index) => ({
+                filename: file.filename,
+                path: albumFilesUrl[index],
+            }));
+            console.log("albumFiles", albumFiles);
+            console.log("albumCover", albumCover);
+            const fileId = await artistSerivce_1.default.uploadAlbum(artistId, albumCover, albumFiles, metadata);
             return res.status(201).json(fileId);
         }
         catch (error) {
             console.error(error.message);
             return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+    static async getSingles(req, res) {
+        try {
+            const singles = await artistSerivce_1.default.getSingles();
+            res.json(singles);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+    static async getSinglesByArtist(req, res) {
+        try {
+            const artistId = req.params.id;
+            const singles = await artistSerivce_1.default.getSinglesByArtist(artistId);
+            res.json(singles);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+    static async getAlbums(req, res) {
+        try {
+            const albums = await artistSerivce_1.default.getAlbums();
+            res.json(albums);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
     static async getAlbumsByArtist(req, res) {
