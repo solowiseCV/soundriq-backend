@@ -93,6 +93,7 @@ class ArtistController {
       req.session.artistId = artistId; // Store artistId in session
       return res.json(updatedArtist);
     } catch (error: any) {
+      console.error(error.message);
       res.status(400).json({ error: error.message });
     }
   }
@@ -167,7 +168,9 @@ class ArtistController {
       return res.status(201).json(fileId);
     } catch (error: any) {
       console.error(error.message);
-      return res.status(500).json({ error: "Internal server error" });
+      return res
+        .status(500)
+        .json({ error: "Internal server error", message: error.message });
     }
   }
 
@@ -221,7 +224,7 @@ class ArtistController {
           console.error(`File upload error: ${err.message}`);
         });
 
-       albumFiles = albumFiles.map((file, index) => ({
+      albumFiles = albumFiles.map((file, index) => ({
         filename: file.filename,
         path: albumFilesUrl[index],
       }));
@@ -236,7 +239,9 @@ class ArtistController {
       return res.status(201).json(fileId);
     } catch (error: any) {
       console.error(error.message);
-      return res.status(500).json({ error: "Internal server error" });
+      return res
+        .status(500)
+        .json({ error: "Internal server error", message: error.message });
     }
   }
 

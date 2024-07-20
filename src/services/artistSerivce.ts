@@ -9,14 +9,19 @@ import prisma from "../config/database";
 class ArtistService {
   // function to update artist profile
   static async updateProfile(userId: String, userData: any) {
-    const user = await updateUser({
-      ...userData,
-      artistProfile: {
+    try {
+      const user = await updateUser({
         ...userData,
-      },
-      id: userId,
-    });
-    return user;
+        artistProfile: {
+          ...userData,
+        },
+        id: userId,
+      });
+      return user;
+    } catch (error: any) {
+      console.error(error.message);
+      throw new Error("Failed to update profile" + error.message);
+    }
   }
 
   static async uploadSingle(
@@ -41,7 +46,7 @@ class ArtistService {
       return createdFiles;
     } catch (error: any) {
       console.error(error.message);
-      throw new Error("Failed to upload file");
+      throw new Error("Failed to upload file" + error.message);
     }
   }
 
@@ -53,7 +58,6 @@ class ArtistService {
     metadata: any
   ) {
     try {
-      console.log(artistId);
       // Check if artistId exists
       const artistProfile = await prisma.artistProfile.findUnique({
         where: { id: artistId },
@@ -91,7 +95,7 @@ class ArtistService {
       return { album, createdTracks };
     } catch (error: any) {
       console.error(error.message);
-      throw new Error("Failed to upload file");
+      throw new Error("Failed to upload file" + error.message);
     }
   }
 
@@ -137,9 +141,8 @@ class ArtistService {
             select: {
               artistName: true,
               id: true,
-              
             },
-          }
+          },
         },
       });
       return albums;
