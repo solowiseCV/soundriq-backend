@@ -622,7 +622,7 @@
         ],
         "parameters": [
           {
-            "name": "singleId",
+            "name": "artistId",
             "in": "path",
             "description": "Artist ID to retrieve",
             "required": true,
@@ -690,7 +690,7 @@
         ],
         "parameters": [
           {
-            "name": "albumId",
+            "name": "artistId",
             "in": "path",
             "description": "Artist  ID to retrieve",
             "required": true,
