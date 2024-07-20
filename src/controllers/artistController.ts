@@ -170,7 +170,7 @@ class ArtistController {
       console.error(error.message);
       return res
         .status(500)
-        .json({ error: error.message, message: error.message });
+        .json({ error: error.message });
     }
   }
 
@@ -241,7 +241,7 @@ class ArtistController {
       console.error(error.message);
       return res
         .status(500)
-        .json({ error: "Internal server error", message: error.message });
+        .json({ error: error.message});
     }
   }
 

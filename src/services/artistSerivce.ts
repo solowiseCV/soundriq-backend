@@ -5,6 +5,7 @@ import {
   getAllArtists,
 } from "../models/userModel";
 import prisma from "../config/database";
+import e from "express";
 
 class ArtistService {
   // function to update artist profile
@@ -20,7 +21,7 @@ class ArtistService {
       return user;
     } catch (error: any) {
       console.error(error.message);
-      throw new Error("Failed to update profile" + error.message);
+      throw new Error(error.message);
     }
   }
 
@@ -48,7 +49,7 @@ class ArtistService {
       return createdFiles;
     } catch (error: any) {
       console.error(error.message);
-      throw new Error("Failed to upload file" + error.message);
+      throw new Error(error.message);
     }
   }
 
@@ -97,7 +98,7 @@ class ArtistService {
       return { album, createdTracks };
     } catch (error: any) {
       console.error(error.message);
-      throw new Error("Failed to upload file" + error.message);
+      throw new Error(error.message);
     }
   }
 
@@ -124,7 +125,12 @@ class ArtistService {
     try {
       const files = await prisma.single.findMany({
         include: {
-          artist: true,
+          artist: {
+            select: {
+              artistName: true,
+              id: true,
+            },
+          },
         },
       });
       return files;
