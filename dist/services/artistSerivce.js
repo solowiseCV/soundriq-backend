@@ -39,7 +39,7 @@ class ArtistService {
             return createdFiles;
         }
         catch (error) {
-            console.error(error.message);
+            // console.error(error.message);
             throw new Error(error.message);
         }
     }

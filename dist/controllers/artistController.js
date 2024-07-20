@@ -30,15 +30,19 @@ class ArtistController {
                     ? files["signatureSound"][0]
                     : undefined;
             }
+            // determine the file type
+            const profilePhotoType = profilePhoto && mime_types_1.default.lookup(profilePhoto.filename);
+            const bannerImageType = bannerImage && mime_types_1.default.lookup(bannerImage.filename);
+            const signatureSoundType = signatureSound && mime_types_1.default.lookup(signatureSound.filename);
             const filesToUpload = [
                 (profilePhoto === null || profilePhoto === void 0 ? void 0 : profilePhoto.path)
-                    ? { path: profilePhoto.path, folder: "profile/" }
+                    ? { path: profilePhoto.path, folder: "profile/", type: profilePhotoType }
                     : null,
                 (signatureSound === null || signatureSound === void 0 ? void 0 : signatureSound.path)
-                    ? { path: signatureSound.path, folder: "signature/" }
+                    ? { path: signatureSound.path, folder: "signature/", type: signatureSoundType }
                     : null,
                 (bannerImage === null || bannerImage === void 0 ? void 0 : bannerImage.path)
-                    ? { path: bannerImage.path, folder: "banner/" }
+                    ? { path: bannerImage.path, folder: "banner/", type: bannerImageType }
                     : null,
             ].filter((file) => file !== null);
             await (0, cloudinary_1.uploadFilesToCloudinary)(filesToUpload)
@@ -103,6 +107,12 @@ class ArtistController {
             if (!singleType || !coverImageType) {
                 throw new Error("Unable to determine file type");
             }
+            if (singleType !== "audio/mpeg" && singleType !== "audio/mp3") {
+                throw new Error("Invalid file type");
+            }
+            if (coverImageType !== "image/jpeg" && coverImageType !== "image/png") {
+                throw new Error("Invalid file type");
+            }
             const artistId = req.session.artistId;
             // const userId = req.userId as string;
             const metadata = JSON.parse(req.body.metadata);
@@ -113,9 +123,10 @@ class ArtistController {
             }
             // save to cloudinary
             const filesToUpload = [
-                { path: singleFile.path, folder: "singles/" },
-                { path: coverImage.path, folder: "cover/" },
+                { path: singleFile.path, folder: "singles/", type: singleType },
+                { path: coverImage.path, folder: "cover/", type: coverImageType },
             ];
+            // console.log("filesToUpload", filesToUpload);
             await (0, cloudinary_1.uploadFilesToCloudinary)(filesToUpload)
                 .then((urls) => {
                 const [singleUrl, coverUrl] = urls;
@@ -133,7 +144,7 @@ class ArtistController {
             return res.status(201).json(fileId);
         }
         catch (error) {
-            console.error(error.message);
+            // console.error(error.message);
             return res.status(500).json({ error: error.message });
         }
     }
@@ -164,10 +175,15 @@ class ArtistController {
             if (!albumCoverType) {
                 throw new Error("Unable to determine file type");
             }
+            if (albumCoverType !== "image/jpeg" &&
+                albumCoverType !== "image/png" &&
+                albumCoverType !== "image/jpg") {
+                throw new Error("Invalid file type");
+            }
             // save to cloudinary
             const filesToUpload = [
-                { path: albumCover.path, folder: "cover/" },
-                ...albumFiles.map((file) => ({ path: file.path, folder: "albums/" })),
+                { path: albumCover.path, folder: "cover/", type: albumCoverType },
+                ...albumFiles.map((file) => ({ path: file.path, folder: "albums/", type: mime_types_1.default.lookup(file.filename) })),
             ];
             await (0, cloudinary_1.uploadFilesToCloudinary)(filesToUpload)
                 .then((urls) => {

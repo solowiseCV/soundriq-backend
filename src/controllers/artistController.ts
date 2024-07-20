@@ -46,15 +46,20 @@ class ArtistController {
           : undefined;
       }
 
+      // determine the file type
+      const profilePhotoType = profilePhoto && mime.lookup(profilePhoto.filename);
+      const bannerImageType = bannerImage && mime.lookup(bannerImage.filename);
+      const signatureSoundType = signatureSound && mime.lookup(signatureSound.filename);
+      
       const filesToUpload = [
         profilePhoto?.path
-          ? { path: profilePhoto.path, folder: "profile/" }
+          ? { path: profilePhoto.path, folder: "profile/",  type: profilePhotoType }
           : null,
         signatureSound?.path
-          ? { path: signatureSound.path, folder: "signature/" }
+          ? { path: signatureSound.path, folder: "signature/", type: signatureSoundType }
           : null,
         bannerImage?.path
-          ? { path: bannerImage.path, folder: "banner/" }
+          ? { path: bannerImage.path, folder: "banner/", type: bannerImageType }
           : null,
       ].filter((file) => file !== null);
 
@@ -87,7 +92,6 @@ class ArtistController {
       };
 
       const userId = req.userId as string;
-      
       const updatedArtist = await ArtistService.updateProfile(userId, data);
       // const result = await findArtistByUserId(userId);
       // const artistId = result?.id;
@@ -127,6 +131,14 @@ class ArtistController {
         throw new Error("Unable to determine file type");
       }
 
+      if (singleType !== "audio/mpeg" && singleType !== "audio/mp3") {
+        throw new Error("Invalid file type");
+      }
+
+      if (coverImageType !== "image/jpeg" && coverImageType !== "image/png") {
+        throw new Error("Invalid file type");
+      }
+
       const artistId = req.session.artistId as string;
       // const userId = req.userId as string;
 
@@ -140,9 +152,13 @@ class ArtistController {
 
       // save to cloudinary
       const filesToUpload = [
-        { path: singleFile.path, folder: "singles/" },
-        { path: coverImage.path, folder: "cover/" },
+        { path: singleFile.path, folder: "singles/", type: singleType },
+        { path: coverImage.path, folder: "cover/", type: coverImageType },
       ];
+
+
+
+      // console.log("filesToUpload", filesToUpload);
 
       await uploadFilesToCloudinary(filesToUpload)
         .then((urls) => {
@@ -168,7 +184,7 @@ class ArtistController {
 
       return res.status(201).json(fileId);
     } catch (error: any) {
-      console.error(error.message);
+      // console.error(error.message);
       return res.status(500).json({ error: error.message });
     }
   }
@@ -208,10 +224,20 @@ class ArtistController {
         throw new Error("Unable to determine file type");
       }
 
+      if (
+        albumCoverType !== "image/jpeg" &&
+        albumCoverType !== "image/png" &&
+        albumCoverType !== "image/jpg"
+      ) {
+        throw new Error("Invalid file type");
+      }
+
+
+
       // save to cloudinary
       const filesToUpload = [
-        { path: albumCover.path, folder: "cover/" },
-        ...albumFiles.map((file) => ({ path: file.path, folder: "albums/" })),
+        { path: albumCover.path, folder: "cover/", type: albumCoverType },
+        ...albumFiles.map((file) => ({ path: file.path, folder: "albums/", type: mime.lookup(file.filename) })),
       ];
 
       await uploadFilesToCloudinary(filesToUpload)
