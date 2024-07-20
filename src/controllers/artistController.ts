@@ -4,7 +4,6 @@ import { findArtistByUserId } from "../models/userModel";
 import { MulterFile } from "../types/fileTypes";
 import { uploadFilesToCloudinary } from "../utils/cloudinary";
 import mime from "mime-types";
-import path from "path";
 
 class ArtistController {
   static async updateProfile(req: Request, res: Response) {
@@ -13,7 +12,6 @@ class ArtistController {
         artistName,
         countryOfOrigin,
         bio,
-        dateOfBirth,
         musicGenre,
         appleMusicAddress,
         spotifyAddress,
@@ -75,7 +73,6 @@ class ArtistController {
         artistName,
         countryOfOrigin,
         bio,
-        dateOfBirth,
         musicGenre,
         appleMusicAddress,
         spotifyAddress,
@@ -90,11 +87,11 @@ class ArtistController {
       };
 
       const userId = req.userId as string;
-      const user = await ArtistService.updateProfile(userId, data);
+      const updatedArtist = await ArtistService.updateProfile(userId, data);
       const result = await findArtistByUserId(userId);
       const artistId = result?.id;
       req.session.artistId = artistId; // Store artistId in session
-      res.json(user);
+      return res.json(updatedArtist);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -129,7 +126,7 @@ class ArtistController {
       }
 
       const artistId = req.session.artistId as string;
-      const userId = req.userId as string;
+      // const userId = req.userId as string;
 
       const metadata = JSON.parse(req.body.metadata);
 
@@ -161,15 +158,13 @@ class ArtistController {
       };
 
       const fileId = await ArtistService.uploadSingle(
-        userId,
+        artistId,
         singleFile,
         coverImage,
         metadata
       );
 
       return res.status(201).json(fileId);
-
-      // console.log("fileId", fileId);
     } catch (error: any) {
       console.error(error.message);
       return res.status(500).json({ error: "Internal server error" });
@@ -230,9 +225,6 @@ class ArtistController {
         filename: file.filename,
         path: albumFilesUrl[index],
       }));
-
-        console.log("albumFiles", albumFiles);
-        console.log("albumCover", albumCover);
 
       const fileId = await ArtistService.uploadAlbum(
         artistId,

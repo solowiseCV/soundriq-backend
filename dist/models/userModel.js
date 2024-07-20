@@ -5,8 +5,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.invalidateResetToken = exports.resetPassword = exports.findUserByPasswordResetToken = exports.savePasswordResetToken = exports.logoutUser = exports.getAllArtists = exports.getAllUsers = exports.findUserByEmail = exports.findArtistByUserId = exports.updateUser = exports.createUser = void 0;
 const database_1 = __importDefault(require("../config/database"));
+const profileFields = [
+    "artistName",
+    "profilePhoto",
+    "bannerImage",
+    "signatureSound",
+    "countryOfOrigin",
+    "bio",
+    "musicGenre",
+    "appleMusicAddress",
+    "spotifyAddress",
+    "soundCloudAddress",
+    "youtubeAddress",
+    "instagramAddress",
+    "tiktokAddress",
+    "manager",
+];
+const calculateProfileCompletion = (profile) => {
+    const totalFields = profileFields.length;
+    let filledFields = 0;
+    profileFields.forEach((field) => {
+        if (profile[field]) {
+            filledFields++;
+        }
+    });
+    const completed = Math.floor((filledFields / totalFields) * 85);
+    console.log(completed);
+    return completed + 15;
+};
 const createUser = async (data) => {
     const { artistProfile, ...userData } = data;
+    const profileCompletion = 15;
     const user = await database_1.default.user.create({
         data: {
             ...userData,
@@ -18,24 +47,28 @@ const createUser = async (data) => {
         },
         // include: { artistProfile: true },
     });
-    return user;
+    return { user, profileCompletion };
 };
 exports.createUser = createUser;
 const updateUser = async (data) => {
     const { artistProfile } = data;
-    return await database_1.default.user.update({
+    const profileCompletion = artistProfile
+        ? calculateProfileCompletion(artistProfile)
+        : 0;
+    const updatedArtist = await database_1.default.user.update({
         where: { id: data.id },
         data: {
             artistProfile: artistProfile
                 ? {
                     update: {
                         ...artistProfile,
-                    }
+                    },
                 }
                 : undefined,
         },
         include: { artistProfile: true },
     });
+    return { user: updatedArtist, profileCompletion };
 };
 exports.updateUser = updateUser;
 const findArtistByUserId = async (userId) => {

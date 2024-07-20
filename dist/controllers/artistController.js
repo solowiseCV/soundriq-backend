@@ -10,7 +10,7 @@ const mime_types_1 = __importDefault(require("mime-types"));
 class ArtistController {
     static async updateProfile(req, res) {
         try {
-            const { artistName, countryOfOrigin, bio, dateOfBirth, musicGenre, appleMusicAddress, spotifyAddress, soundCloudAddress, youtubeAddress, instagramAddress, tiktokAddress, manager, } = req.body;
+            const { artistName, countryOfOrigin, bio, musicGenre, appleMusicAddress, spotifyAddress, soundCloudAddress, youtubeAddress, instagramAddress, tiktokAddress, manager, } = req.body;
             let profilePhoto;
             let bannerImage;
             let signatureSound;
@@ -56,7 +56,6 @@ class ArtistController {
                 artistName,
                 countryOfOrigin,
                 bio,
-                dateOfBirth,
                 musicGenre,
                 appleMusicAddress,
                 spotifyAddress,
@@ -70,11 +69,11 @@ class ArtistController {
                 signatureSound,
             };
             const userId = req.userId;
-            const user = await artistSerivce_1.default.updateProfile(userId, data);
+            const updatedArtist = await artistSerivce_1.default.updateProfile(userId, data);
             const result = await (0, userModel_1.findArtistByUserId)(userId);
             const artistId = result === null || result === void 0 ? void 0 : result.id;
             req.session.artistId = artistId; // Store artistId in session
-            res.json(user);
+            return res.json(updatedArtist);
         }
         catch (error) {
             res.status(400).json({ error: error.message });
@@ -105,7 +104,7 @@ class ArtistController {
                 throw new Error("Unable to determine file type");
             }
             const artistId = req.session.artistId;
-            const userId = req.userId;
+            // const userId = req.userId as string;
             const metadata = JSON.parse(req.body.metadata);
             if (!singleFile || !coverImage) {
                 return res
@@ -130,9 +129,8 @@ class ArtistController {
                 filename: singleFile.filename,
                 path: singleFileUrl,
             };
-            const fileId = await artistSerivce_1.default.uploadSingle(userId, singleFile, coverImage, metadata);
+            const fileId = await artistSerivce_1.default.uploadSingle(artistId, singleFile, coverImage, metadata);
             return res.status(201).json(fileId);
-            // console.log("fileId", fileId);
         }
         catch (error) {
             console.error(error.message);
@@ -183,8 +181,6 @@ class ArtistController {
                 filename: file.filename,
                 path: albumFilesUrl[index],
             }));
-            console.log("albumFiles", albumFiles);
-            console.log("albumCover", albumCover);
             const fileId = await artistSerivce_1.default.uploadAlbum(artistId, albumCover, albumFiles, metadata);
             return res.status(201).json(fileId);
         }

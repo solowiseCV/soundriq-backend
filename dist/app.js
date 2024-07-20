@@ -18,7 +18,7 @@ app.use((0, cors_1.default)());
 // Middleware to parse URL-encoded data 
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, express_session_1.default)({
-    secret: "your-secret-key",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },

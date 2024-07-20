@@ -1,8 +1,10 @@
 import { Router } from "express";
-const { getStatus } = require("../controllers/statusController");
+import { Request, Response } from "express";
 
 const router = Router();
 
-router.get("/status", getStatus);
+router.get("/status", (req: Request, res: Response) => {
+  res.json({ status: "🚀 Up and running..." });
+});
 
 export default router;

@@ -1,4 +1,8 @@
-import prisma, { User, BlacklistedToken, ArtistProfile } from "../config/database";
+import prisma, {
+  User,
+  BlacklistedToken,
+  ArtistProfile,
+} from "../config/database";
 
 type CreateUserInput = Omit<User, "createdAt" | "updatedAt"> & {
   name: string;
@@ -8,7 +12,6 @@ type CreateUserInput = Omit<User, "createdAt" | "updatedAt"> & {
   artistProfile?: {
     fullName?: string;
     artistName?: string;
-    dateOfBirth?: string;
     profilePhoto?: string;
     bannerImage?: string;
     signatureSound?: string;
@@ -25,10 +28,46 @@ type CreateUserInput = Omit<User, "createdAt" | "updatedAt"> & {
   };
 };
 
+const profileFields = [
+  "artistName",
+  "profilePhoto",
+  "bannerImage",
+  "signatureSound",
+  "countryOfOrigin",
+  "bio",
+  "musicGenre",
+  "appleMusicAddress",
+  "spotifyAddress",
+  "soundCloudAddress",
+  "youtubeAddress",
+  "instagramAddress",
+  "tiktokAddress",
+  "manager",
+];
+
+const calculateProfileCompletion = (
+  profile: Partial<ArtistProfile>
+): number => {
+  const totalFields = profileFields.length;
+  let filledFields = 0;
+
+  profileFields.forEach((field) => {
+    if (profile[field as keyof ArtistProfile]) {
+      filledFields++;
+    }
+  });
+
+  const completed = Math.floor((filledFields / totalFields) * 85 );
+  console.log(completed);
+  return completed + 15;
+};
+
 export const createUser = async (
   data: CreateUserInput
-): Promise<User> => {
+): Promise<{ user: User; profileCompletion: number }> => {
   const { artistProfile, ...userData } = data;
+
+  const profileCompletion = 15;
 
   const user = await prisma.user.create({
     data: {
@@ -42,36 +81,40 @@ export const createUser = async (
     // include: { artistProfile: true },
   });
 
-  return user;
-
+  return { user, profileCompletion };
 };
 
 export const updateUser = async (
   data: CreateUserInput
-): Promise<User> => {
-
+): Promise<{ user: User; profileCompletion: number }> => {
   const { artistProfile } = data;
 
-  return await prisma.user.update({
-    
+  const profileCompletion = artistProfile
+    ? calculateProfileCompletion(artistProfile)
+    : 0;
+
+  const updatedArtist = await prisma.user.update({
     where: { id: data.id },
     data: {
       artistProfile: artistProfile
         ? {
             update: {
               ...artistProfile,
-            }
+            },
           }
         : undefined,
     },
     include: { artistProfile: true },
-    },
-  );
-}
+  });
 
-export const findArtistByUserId = async (userId: string): Promise<ArtistProfile | null> => {
+  return { user: updatedArtist, profileCompletion };
+};
+
+export const findArtistByUserId = async (
+  userId: string
+): Promise<ArtistProfile | null> => {
   return await prisma.artistProfile.findFirst({ where: { userId } });
-}
+};
 
 export const findUserByEmail = async (email: string): Promise<User | null> => {
   return await prisma.user.findUnique({ where: { email } });
@@ -83,7 +126,7 @@ export const getAllUsers = async (): Promise<User[]> => {
 
 export const getAllArtists = async (): Promise<ArtistProfile[]> => {
   return await prisma.artistProfile.findMany();
-}
+};
 
 export const logoutUser = async (token: string): Promise<BlacklistedToken> => {
   const blacklistedToken = await prisma.blacklistedToken.findFirst({
@@ -108,7 +151,6 @@ export const savePasswordResetToken = async (userId: string, token: string) => {
       expiresAt: expirationTime,
     },
   });
-
 };
 
 export const findUserByPasswordResetToken = async (

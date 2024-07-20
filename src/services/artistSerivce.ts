@@ -5,7 +5,6 @@ import {
   getAllArtists,
 } from "../models/userModel";
 import prisma from "../config/database";
-import mime from "mime-types";
 
 class ArtistService {
   // function to update artist profile
@@ -28,7 +27,7 @@ class ArtistService {
   ) {
     try {
       // create a single file with the cover and metadata info to the artist
-      const createdFiles = await prisma.file.create({
+      const createdFiles = await prisma.single.create({
         data: {
           filename: singleFile.filename,
           path: singleFile.path,
@@ -99,7 +98,7 @@ class ArtistService {
   // function to get singles by artist
   static async getSinglesByArtist(artistId: string) {
     try {
-      const files = await prisma.file.findMany({
+      const files = await prisma.single.findMany({
         where: {
           artistId: artistId,
         },
@@ -117,7 +116,7 @@ class ArtistService {
   // function to get all singles
   static async getSingles() {
     try {
-      const files = await prisma.file.findMany({
+      const files = await prisma.single.findMany({
         include: {
           artist: true,
         },
