@@ -47,16 +47,50 @@ class ArtistController {
       }
 
       // determine the file type
-      const profilePhotoType = profilePhoto && mime.lookup(profilePhoto.filename);
+      const profilePhotoType =
+        profilePhoto && mime.lookup(profilePhoto.filename);
       const bannerImageType = bannerImage && mime.lookup(bannerImage.filename);
-      const signatureSoundType = signatureSound && mime.lookup(signatureSound.filename);
-      
+      const signatureSoundType =
+        signatureSound && mime.lookup(signatureSound.filename);
+
+      if (
+        signatureSound &&
+        signatureSoundType !== "audio/mpeg" &&
+        signatureSoundType !== "audio/mp3"
+      ) {
+        throw new Error("Invalid file type");
+      }
+
+      if (
+        profilePhoto &&
+        profilePhotoType !== "image/jpeg" &&
+        profilePhotoType !== "image/png"
+      ) {
+        throw new Error("Invalid file type");
+      }
+
+      if (
+        bannerImage &&
+        bannerImageType !== "image/jpeg" &&
+        bannerImageType !== "image/png"
+      ) {
+        throw new Error("Invalid file type");
+      }
+
       const filesToUpload = [
         profilePhoto?.path
-          ? { path: profilePhoto.path, folder: "profile/",  type: profilePhotoType }
+          ? {
+              path: profilePhoto.path,
+              folder: "profile/",
+              type: profilePhotoType,
+            }
           : null,
         signatureSound?.path
-          ? { path: signatureSound.path, folder: "signature/", type: signatureSoundType }
+          ? {
+              path: signatureSound.path,
+              folder: "signature/",
+              type: signatureSoundType,
+            }
           : null,
         bannerImage?.path
           ? { path: bannerImage.path, folder: "banner/", type: bannerImageType }
@@ -156,8 +190,6 @@ class ArtistController {
         { path: coverImage.path, folder: "cover/", type: coverImageType },
       ];
 
-
-
       // console.log("filesToUpload", filesToUpload);
 
       await uploadFilesToCloudinary(filesToUpload)
@@ -219,10 +251,24 @@ class ArtistController {
       }
 
       const albumCoverType = albumCover && mime.lookup(albumCover.filename);
+      const albumFilesType = albumFiles.map((file) =>
+        mime.lookup(file.filename)
+      );
 
       if (!albumCoverType) {
         throw new Error("Unable to determine file type");
       }
+
+      albumFilesType.forEach((type) => {
+        if (
+          type !== "audio/mpeg" &&
+          type !== "audio/mp3" &&
+          type !== "audio/wav" &&
+          type !== "audio/m4a"
+        ) {
+          throw new Error("Invalid file type");
+        }
+      });
 
       if (
         albumCoverType !== "image/jpeg" &&
@@ -232,12 +278,14 @@ class ArtistController {
         throw new Error("Invalid file type");
       }
 
-
-
       // save to cloudinary
       const filesToUpload = [
         { path: albumCover.path, folder: "cover/", type: albumCoverType },
-        ...albumFiles.map((file) => ({ path: file.path, folder: "albums/", type: mime.lookup(file.filename) })),
+        ...albumFiles.map((file) => ({
+          path: file.path,
+          folder: "albums/",
+          type: mime.lookup(file.filename),
+        })),
       ];
 
       await uploadFilesToCloudinary(filesToUpload)

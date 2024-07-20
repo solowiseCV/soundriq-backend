@@ -34,12 +34,35 @@ class ArtistController {
             const profilePhotoType = profilePhoto && mime_types_1.default.lookup(profilePhoto.filename);
             const bannerImageType = bannerImage && mime_types_1.default.lookup(bannerImage.filename);
             const signatureSoundType = signatureSound && mime_types_1.default.lookup(signatureSound.filename);
+            if (signatureSound &&
+                signatureSoundType !== "audio/mpeg" &&
+                signatureSoundType !== "audio/mp3") {
+                throw new Error("Invalid file type");
+            }
+            if (profilePhoto &&
+                profilePhotoType !== "image/jpeg" &&
+                profilePhotoType !== "image/png") {
+                throw new Error("Invalid file type");
+            }
+            if (bannerImage &&
+                bannerImageType !== "image/jpeg" &&
+                bannerImageType !== "image/png") {
+                throw new Error("Invalid file type");
+            }
             const filesToUpload = [
                 (profilePhoto === null || profilePhoto === void 0 ? void 0 : profilePhoto.path)
-                    ? { path: profilePhoto.path, folder: "profile/", type: profilePhotoType }
+                    ? {
+                        path: profilePhoto.path,
+                        folder: "profile/",
+                        type: profilePhotoType,
+                    }
                     : null,
                 (signatureSound === null || signatureSound === void 0 ? void 0 : signatureSound.path)
-                    ? { path: signatureSound.path, folder: "signature/", type: signatureSoundType }
+                    ? {
+                        path: signatureSound.path,
+                        folder: "signature/",
+                        type: signatureSoundType,
+                    }
                     : null,
                 (bannerImage === null || bannerImage === void 0 ? void 0 : bannerImage.path)
                     ? { path: bannerImage.path, folder: "banner/", type: bannerImageType }
@@ -172,9 +195,18 @@ class ArtistController {
                 return res.status(400).json({ error: "Album cover or files missing" });
             }
             const albumCoverType = albumCover && mime_types_1.default.lookup(albumCover.filename);
+            const albumFilesType = albumFiles.map((file) => mime_types_1.default.lookup(file.filename));
             if (!albumCoverType) {
                 throw new Error("Unable to determine file type");
             }
+            albumFilesType.forEach((type) => {
+                if (type !== "audio/mpeg" &&
+                    type !== "audio/mp3" &&
+                    type !== "audio/wav" &&
+                    type !== "audio/m4a") {
+                    throw new Error("Invalid file type");
+                }
+            });
             if (albumCoverType !== "image/jpeg" &&
                 albumCoverType !== "image/png" &&
                 albumCoverType !== "image/jpg") {
@@ -183,7 +215,11 @@ class ArtistController {
             // save to cloudinary
             const filesToUpload = [
                 { path: albumCover.path, folder: "cover/", type: albumCoverType },
-                ...albumFiles.map((file) => ({ path: file.path, folder: "albums/", type: mime_types_1.default.lookup(file.filename) })),
+                ...albumFiles.map((file) => ({
+                    path: file.path,
+                    folder: "albums/",
+                    type: mime_types_1.default.lookup(file.filename),
+                })),
             ];
             await (0, cloudinary_1.uploadFilesToCloudinary)(filesToUpload)
                 .then((urls) => {
