@@ -58,7 +58,6 @@ const calculateProfileCompletion = (
   });
 
   const completed = Math.floor((filledFields / totalFields) * 85 );
-  console.log(completed);
   return completed + 15;
 };
 

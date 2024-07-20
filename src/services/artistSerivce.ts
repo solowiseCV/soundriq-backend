@@ -5,7 +5,6 @@ import {
   getAllArtists,
 } from "../models/userModel";
 import prisma from "../config/database";
-import e from "express";
 
 class ArtistService {
   // function to update artist profile
