@@ -87,6 +87,7 @@ class ArtistController {
       };
 
       const userId = req.userId as string;
+      
       const updatedArtist = await ArtistService.updateProfile(userId, data);
       // const result = await findArtistByUserId(userId);
       // const artistId = result?.id;

@@ -35,6 +35,7 @@ class UserController {
       const { email, password } = req.body;
       const { token, userInfo } = await UserService.loginUser(email, password);
       const userId = userInfo.id;
+      
       const result = await findArtistByUserId(userId);
       const artistId = result?.id;
       req.session.artistId = artistId; // Store artistId in session
