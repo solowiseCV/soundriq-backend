@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const authService_1 = __importDefault(require("../services/authService"));
+const userModel_1 = require("../models/userModel");
 class UserController {
     static async registerUser(req, res) {
         try {
@@ -31,6 +32,10 @@ class UserController {
         try {
             const { email, password } = req.body;
             const { token, userInfo } = await authService_1.default.loginUser(email, password);
+            const userId = userInfo.id;
+            const result = await (0, userModel_1.findArtistByUserId)(userId);
+            const artistId = result === null || result === void 0 ? void 0 : result.id;
+            req.session.artistId = artistId; // Store artistId in session
             res.json({ token, userInfo });
         }
         catch (error) {

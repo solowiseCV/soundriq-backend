@@ -88,9 +88,9 @@ class ArtistController {
 
       const userId = req.userId as string;
       const updatedArtist = await ArtistService.updateProfile(userId, data);
-      const result = await findArtistByUserId(userId);
-      const artistId = result?.id;
-      req.session.artistId = artistId; // Store artistId in session
+      // const result = await findArtistByUserId(userId);
+      // const artistId = result?.id;
+      // req.session.artistId = artistId; // Store artistId in session
       return res.json(updatedArtist);
     } catch (error: any) {
       console.error(error.message);

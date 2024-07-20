@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const artistSerivce_1 = __importDefault(require("../services/artistSerivce"));
-const userModel_1 = require("../models/userModel");
 const cloudinary_1 = require("../utils/cloudinary");
 const mime_types_1 = __importDefault(require("mime-types"));
 class ArtistController {
@@ -70,9 +69,9 @@ class ArtistController {
             };
             const userId = req.userId;
             const updatedArtist = await artistSerivce_1.default.updateProfile(userId, data);
-            const result = await (0, userModel_1.findArtistByUserId)(userId);
-            const artistId = result === null || result === void 0 ? void 0 : result.id;
-            req.session.artistId = artistId; // Store artistId in session
+            // const result = await findArtistByUserId(userId);
+            // const artistId = result?.id;
+            // req.session.artistId = artistId; // Store artistId in session
             return res.json(updatedArtist);
         }
         catch (error) {

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import UserService from "../services/authService";
-import upload from "../middlewares/artist/file_upload";
-import { MulterFile } from "../types/fileTypes";
+import { findArtistByUserId } from "../models/userModel";
 
 class UserController {
   static async registerUser(req: Request, res: Response) {
@@ -35,6 +34,10 @@ class UserController {
     try {
       const { email, password } = req.body;
       const { token, userInfo } = await UserService.loginUser(email, password);
+      const userId = userInfo.id;
+      const result = await findArtistByUserId(userId);
+      const artistId = result?.id;
+      req.session.artistId = artistId; // Store artistId in session
       res.json({ token, userInfo });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
