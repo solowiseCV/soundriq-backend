@@ -8,14 +8,20 @@ const database_1 = __importDefault(require("../config/database"));
 class ArtistService {
     // function to update artist profile
     static async updateProfile(userId, userData) {
-        const user = await (0, userModel_1.updateUser)({
-            ...userData,
-            artistProfile: {
+        try {
+            const user = await (0, userModel_1.updateUser)({
                 ...userData,
-            },
-            id: userId,
-        });
-        return user;
+                artistProfile: {
+                    ...userData,
+                },
+                id: userId,
+            });
+            return user;
+        }
+        catch (error) {
+            console.error(error.message);
+            throw new Error(error.message);
+        }
     }
     static async uploadSingle(artistId, singleFile, coverImage, metadata) {
         try {
@@ -34,13 +40,12 @@ class ArtistService {
         }
         catch (error) {
             console.error(error.message);
-            throw new Error("Failed to upload file");
+            throw new Error(error.message);
         }
     }
     // function to upload album
     static async uploadAlbum(artistId, coverImage, albumFiles, metadata) {
         try {
-            console.log(artistId);
             // Check if artistId exists
             const artistProfile = await database_1.default.artistProfile.findUnique({
                 where: { id: artistId },
@@ -72,7 +77,7 @@ class ArtistService {
         }
         catch (error) {
             console.error(error.message);
-            throw new Error("Failed to upload file");
+            throw new Error(error.message);
         }
     }
     // function to get singles by artist
@@ -83,7 +88,12 @@ class ArtistService {
                     artistId: artistId,
                 },
                 include: {
-                    artist: true,
+                    artist: {
+                        select: {
+                            artistName: true,
+                            id: true,
+                        },
+                    },
                 },
             });
             return files;
@@ -98,7 +108,12 @@ class ArtistService {
         try {
             const files = await database_1.default.single.findMany({
                 include: {
-                    artist: true,
+                    artist: {
+                        select: {
+                            artistName: true,
+                            id: true,
+                        },
+                    },
                 },
             });
             return files;
@@ -118,7 +133,7 @@ class ArtistService {
                             artistName: true,
                             id: true,
                         },
-                    }
+                    },
                 },
             });
             return albums;
@@ -136,7 +151,12 @@ class ArtistService {
                     artistId: artistId,
                 },
                 include: {
-                    artist: true,
+                    artist: {
+                        select: {
+                            artistName: true,
+                            id: true,
+                        },
+                    },
                 },
             });
             return albums;

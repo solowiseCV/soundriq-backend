@@ -30,7 +30,6 @@ const calculateProfileCompletion = (profile) => {
         }
     });
     const completed = Math.floor((filledFields / totalFields) * 85);
-    console.log(completed);
     return completed + 15;
 };
 const createUser = async (data) => {

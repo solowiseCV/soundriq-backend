@@ -76,6 +76,7 @@ class ArtistController {
             return res.json(updatedArtist);
         }
         catch (error) {
+            console.error(error.message);
             res.status(400).json({ error: error.message });
         }
     }
@@ -134,7 +135,9 @@ class ArtistController {
         }
         catch (error) {
             console.error(error.message);
-            return res.status(500).json({ error: "Internal server error" });
+            return res
+                .status(500)
+                .json({ error: error.message });
         }
     }
     static async uploadAlbum(req, res) {
@@ -186,7 +189,9 @@ class ArtistController {
         }
         catch (error) {
             console.error(error.message);
-            return res.status(500).json({ error: "Internal server error" });
+            return res
+                .status(500)
+                .json({ error: error.message });
         }
     }
     static async getSingles(req, res) {
