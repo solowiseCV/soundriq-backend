@@ -4,6 +4,20 @@
     "title": "SoundRig's API",
     "version": "1.0.0"
   },
+  "tags": [
+    {
+      "name": "status",
+      "description": "API status related endpoints"
+    },
+    {
+      "name": "auth",
+      "description": "Authentication related endpoints"
+    },
+    {
+      "name": "artist",
+      "description": "Artist related endpoints"
+    }
+  ],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -16,6 +30,9 @@
     "/auth/register": {
       "post": {
         "summary": "Register a new user",
+        "tags": [
+          "auth"
+        ],
         "description": "Register a new user with email and name",
         "consumes": [
           "application/json"
@@ -71,6 +88,9 @@
     "/auth/login": {
       "post": {
         "summary": "Login a user",
+        "tags": [
+          "auth"
+        ],
         "description": "Login a user with email and password",
         "consumes": [
           "application/json"
@@ -117,6 +137,9 @@
     "/auth/logout": {
       "post": {
         "summary": "Logout a user",
+        "tags": [
+          "auth"
+        ],
         "description": "Logout a user from the system",
         "security": [
           {
@@ -133,6 +156,9 @@
     "/auth/forgot-password": {
       "post": {
         "summary": "Forgot password",
+        "tags": [
+          "auth"
+        ],
         "description": "Send a password reset link to the user's email",
         "consumes": [
           "application/json"
@@ -173,205 +199,217 @@
             "description": "Invalid input"
           }
         }
-      },
-      "/auth/reset-password": {
-        "post": {
-          "summary": "Reset password",
-          "description": "Reset the user's password with a new one",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "name": "resetData",
-              "in": "body",
-              "description": "Reset data including email, token and new password",
-              "required": true,
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "password": {
-                    "type": "string",
-                    "example": "password123"
-                  }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "summary": "Reset password",
+        "tags": [
+          "auth"
+        ],
+        "description": "Reset the user's password with a new one",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "resetData",
+            "in": "body",
+            "description": "Reset data including email, token and new password",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              },
+              "required": [
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password reset successful"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/artist/profile": {
+      "put": {
+        "summary": "Complete Artist Profile",
+        "tags": [
+          "artist"
+        ],
+        "consumes": [
+          "application/json",
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "artistData",
+            "in": "body",
+            "description": "Artist data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "artistName": {
+                  "type": "string",
+                  "example": "john Doe"
                 },
-                "required": [
-                  "password"
-                ]
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Password reset successful"
-            },
-            "400": {
-              "description": "Invalid input"
-            }
-          }
-        }
-      },
-      "/artist/profile": {
-        "put": {
-          "summary": "Complete Artist Profile",
-          "consumes": [
-            "application/json",
-            "multipart/form-data"
-          ],
-          "parameters": [
-            {
-              "name": "artistData",
-              "in": "body",
-              "description": "Artist data",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "artistName": {
-                    "type": "string",
-                    "example": "john Doe"
-                  },
-                  "countryOfOrigin": {
-                    "type": "string",
-                    "example": "China"
-                  },
-                  "bio": {
-                    "type": "string",
-                    "example": "kim is the best"
-                  },
-                  "musicGenre": {
-                    "type": "string",
-                    "example": "metal"
-                  },
-                  "appleMusicAddress": {
-                    "type": "string",
-                    "example": "https://example.com/"
-                  },
-                  "spotifyAddress": {
-                    "type": "string",
-                    "example": "https://example.com/"
-                  },
-                  "soundCloudAddress": {
-                    "type": "string",
-                    "example": "https://example.com/"
-                  },
-                  "youtubeAddress": {
-                    "type": "string",
-                    "example": "https://example.com/"
-                  },
-                  "instagramAddress": {
-                    "type": "string",
-                    "example": "https://example.com/"
-                  },
-                  "tiktokAddress": {
-                    "type": "string",
-                    "example": "https://example.com/"
-                  },
-                  "manager": {
-                    "type": "string",
-                    "example": "kim"
-                  }
+                "countryOfOrigin": {
+                  "type": "string",
+                  "example": "China"
+                },
+                "bio": {
+                  "type": "string",
+                  "example": "kim is the best"
+                },
+                "musicGenre": {
+                  "type": "string",
+                  "example": "metal"
+                },
+                "appleMusicAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "spotifyAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "soundCloudAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "youtubeAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "instagramAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "tiktokAddress": {
+                  "type": "string",
+                  "example": "https://example.com/"
+                },
+                "manager": {
+                  "type": "string",
+                  "example": "kim"
                 }
               }
-            },
-            {
-              "name": "profilePhoto",
-              "in": "formData",
-              "description": "Profile picture of the artist",
-              "required": false,
-              "type": "file"
-            },
-            {
-              "name": "bannerImage",
-              "in": "formData",
-              "description": "Banner Image of the artist",
-              "required": false,
-              "type": "file"
-            },
-            {
-              "name": "signatureSound",
-              "in": "formData",
-              "description": "Signature Sound of the artist",
-              "required": false,
-              "type": "file"
             }
-          ],
-          "security": [
-            {
-              "BearerAuth": []
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Profile completion successful"
-            },
-            "400": {
-              "description": "Invalid input"
-            }
+          },
+          {
+            "name": "profilePhoto",
+            "in": "formData",
+            "description": "Profile picture of the artist",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "bannerImage",
+            "in": "formData",
+            "description": "Banner Image of the artist",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "signatureSound",
+            "in": "formData",
+            "description": "Signature Sound of the artist",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile completion successful"
+          },
+          "400": {
+            "description": "Invalid input"
           }
         }
-      },
-      "/artist/profile/{artistId}": {
-        "get": {
-          "summary": "Get Artist Profile",
-          "description": "Retrieve an artist's profile by their ID",
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "name": "artistId",
-              "in": "path",
-              "description": "ID of the artist to retrieve",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "security": [
-            {
-              "BearerAuth": []
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Artist found"
-            },
-            "404": {
-              "description": "Artist not found"
-            }
+      }
+    },
+    "/artist/profile/{artistId}": {
+      "get": {
+        "summary": "Get Artist Profile",
+        "tags": [
+          "artist"
+        ],
+        "description": "Retrieve an artist's profile by their ID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "artistId",
+            "in": "path",
+            "description": "ID of the artist to retrieve",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist found"
+          },
+          "404": {
+            "description": "Artist not found"
           }
         }
-      },
-      "/artist/profile/": {
-        "get": {
-          "summary": "Get all artists",
-          "description": "Retrieve a list of all registered artists",
-          "produces": [
-            "application/json"
-          ],
-          "security": [
-            {
-              "BearerAuth": []
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "List of artists retrieved successfully",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "artists": {
-                    "type": "array",
-                    "items": {}
-                  }
+      }
+    },
+    "/artist/profile/": {
+      "get": {
+        "summary": "Get all artists",
+        "tags": [
+          "artist"
+        ],
+        "description": "Retrieve a list of all registered artists",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of artists retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "artists": {
+                  "type": "array",
+                  "items": {}
                 }
               }
-            },
-            "404": {
-              "description": "No artists found"
             }
+          },
+          "404": {
+            "description": "No artists found"
           }
         }
       }
@@ -379,6 +417,9 @@
     "/artist/single": {
       "post": {
         "summary": "Upload a single",
+        "tags": [
+          "artist"
+        ],
         "description": "Upload a single music track",
         "consumes": [
           "multipart/form-data"
@@ -440,6 +481,9 @@
     "/artist/album": {
       "post": {
         "summary": "Upload an album",
+        "tags": [
+          "artist"
+        ],
         "description": "Upload an album with multiple tracks",
         "consumes": [
           "multipart/form-data"
@@ -501,6 +545,9 @@
     "/artist/singles": {
       "get": {
         "summary": "Get all singles",
+        "tags": [
+          "artist"
+        ],
         "description": "Retrieve a list of all singles uploaded by artists",
         "produces": [
           "application/json"
@@ -532,6 +579,9 @@
     "/artist/albums": {
       "get": {
         "summary": "Get all albums",
+        "tags": [
+          "artist"
+        ],
         "description": "Retrieve a list of all albums uploaded by artists",
         "produces": [
           "application/json"
@@ -560,9 +610,46 @@
         }
       }
     },
-    "/artist/singles/{singleId}": {
+    "/artist/singles/{artistId}": {
       "get": {
-        "summary": "Get a single",
+        "summary": "Get a single by Artist ID",
+        "tags": [
+          "artist"
+        ],
+        "description": "Retrieve a single by artist ID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "singleId",
+            "in": "path",
+            "description": "Artist ID to retrieve",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single found"
+          },
+          "404": {
+            "description": "Single not found"
+          }
+        }
+      }
+    },
+    "/artist/single/{singleId}": {
+      "get": {
+        "summary": "Get a single by ID",
+        "tags": [
+          "artist"
+        ],
         "description": "Retrieve a single by its ID",
         "produces": [
           "application/json"
@@ -591,9 +678,46 @@
         }
       }
     },
-    "/artist/albums/{albumId}": {
+    "/artist/albums/{artistId}": {
+      "get": {
+        "summary": "Get an album by Artist ID",
+        "tags": [
+          "artist"
+        ],
+        "description": "Retrieve an album by Artist ID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "description": "Artist  ID to retrieve",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album found"
+          },
+          "404": {
+            "description": "Album not found"
+          }
+        }
+      }
+    },
+    "/artist/album/{albumId}": {
       "get": {
         "summary": "Get an album",
+        "tags": [
+          "artist"
+        ],
         "description": "Retrieve an album by its ID",
         "produces": [
           "application/json"
@@ -625,6 +749,9 @@
     "/status": {
       "get": {
         "summary": "Get API status",
+        "tags": [
+          "status"
+        ],
         "description": "Check the status of the API",
         "produces": [
           "application/json"
