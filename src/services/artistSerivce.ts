@@ -32,8 +32,6 @@ class ArtistService {
     metadata: any
   ) {
     try {
-      console.log("singleFile", singleFile);
-      console.log("artistId", artistId);
       // create a single file with the cover and metadata info to the artist
       const createdFiles = await prisma.single.create({
         data: {
@@ -110,7 +108,12 @@ class ArtistService {
           artistId: artistId,
         },
         include: {
-          artist: true,
+          artist: {
+            select: {
+              artistName: true,
+              id: true,
+            },
+          },
         },
       });
       return files;
@@ -168,7 +171,12 @@ class ArtistService {
           artistId: artistId,
         },
         include: {
-          artist: true,
+          artist: {
+            select: {
+              artistName: true,
+              id: true,
+            },
+          },
         },
       });
       return albums;
