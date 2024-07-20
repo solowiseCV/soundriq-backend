@@ -14,7 +14,7 @@ class FileService {
                 throw new Error("Unable to determine file type");
             }
             // Using $transaction to handle multiple file creation
-            const createdFiles = await database_1.default.$transaction(files.map((file) => database_1.default.file.create({
+            const createdFiles = await database_1.default.$transaction(files.map((file) => database_1.default.single.create({
                 data: {
                     filename: file.filename,
                     path: file.path,
@@ -36,21 +36,21 @@ class FileService {
         return artists;
     }
     static async getFile(fileId) {
-        const file = await database_1.default.file.findUnique({
+        const file = await database_1.default.single.findUnique({
             where: { id: fileId },
             include: { artist: true },
         });
         return file;
     }
     static async getFiles(artistId) {
-        const files = await database_1.default.file.findMany({
+        const files = await database_1.default.single.findMany({
             where: { artistId },
             include: { artist: true },
         });
         return files;
     }
     static async updateFile(fileId, files) {
-        const updatedFile = await database_1.default.file.update({
+        const updatedFile = await database_1.default.single.update({
             where: { id: fileId },
             data: {
                 filename: files[0].filename,
@@ -60,7 +60,7 @@ class FileService {
         return updatedFile;
     }
     static async deleteFile(fileId) {
-        const file = await database_1.default.file.delete({
+        const file = await database_1.default.single.delete({
             where: { id: fileId },
         });
         return file;
