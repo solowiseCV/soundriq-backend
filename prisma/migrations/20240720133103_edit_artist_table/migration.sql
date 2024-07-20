@@ -39,10 +39,9 @@ CREATE TABLE "ArtistProfile" (
 CREATE TABLE "Album" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "path" TEXT NOT NULL,
-    "artistId" TEXT NOT NULL,
     "coverImage" TEXT NOT NULL,
     "metadata" JSONB NOT NULL,
+    "artistId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -50,7 +49,19 @@ CREATE TABLE "Album" (
 );
 
 -- CreateTable
-CREATE TABLE "File" (
+CREATE TABLE "Track" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "path" TEXT NOT NULL,
+    "albumId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Track_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Single" (
     "id" TEXT NOT NULL,
     "filename" TEXT NOT NULL,
     "path" TEXT NOT NULL,
@@ -60,7 +71,7 @@ CREATE TABLE "File" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "artistId" TEXT NOT NULL,
 
-    CONSTRAINT "File_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Single_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -96,7 +107,10 @@ CREATE INDEX "ArtistProfile_artistName_idx" ON "ArtistProfile"("artistName");
 ALTER TABLE "ArtistProfile" ADD CONSTRAINT "ArtistProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Album" ADD CONSTRAINT "Album_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "ArtistProfile"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Album" ADD CONSTRAINT "Album_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "ArtistProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "File" ADD CONSTRAINT "File_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "ArtistProfile"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Track" ADD CONSTRAINT "Track_albumId_fkey" FOREIGN KEY ("albumId") REFERENCES "Album"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Single" ADD CONSTRAINT "Single_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "ArtistProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
