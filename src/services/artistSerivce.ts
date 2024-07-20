@@ -122,6 +122,29 @@ class ArtistService {
     }
   }
 
+  // function to get single by id
+  static async getSingleById(singleId: string) {
+    try {
+      const file = await prisma.single.findUnique({
+        where: {
+          id: singleId,
+        },
+        include: {
+          artist: {
+            select: {
+              artistName: true,
+              id: true,
+            },
+          },
+        },
+      });
+      return file;
+    } catch (error: any) {
+      console.error(error.message);
+      throw new Error("Unable to retrieve file");
+    }
+  }
+
   // function to get all singles
   static async getSingles() {
     try {
@@ -159,6 +182,29 @@ class ArtistService {
     } catch (error: any) {
       console.error(error.message);
       throw new Error("Unable to retrieve albums");
+    }
+  }
+
+  // function to get album by id
+  static async getAlbumById(albumId: string) {
+    try {
+      const album = await prisma.album.findUnique({
+        where: {
+          id: albumId,
+        },
+        include: {
+          artist: {
+            select: {
+              artistName: true,
+              id: true,
+            },
+          },
+        },
+      });
+      return album;
+    } catch (error: any) {
+      console.error(error.message);
+      throw new Error("Unable to retrieve album");
     }
   }
 

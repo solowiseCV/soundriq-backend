@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import ArtistService from "../services/artistSerivce";
 import { findArtistByUserId } from "../models/userModel";
 import { MulterFile } from "../types/fileTypes";
@@ -168,9 +168,7 @@ class ArtistController {
       return res.status(201).json(fileId);
     } catch (error: any) {
       console.error(error.message);
-      return res
-        .status(500)
-        .json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
 
@@ -239,9 +237,7 @@ class ArtistController {
       return res.status(201).json(fileId);
     } catch (error: any) {
       console.error(error.message);
-      return res
-        .status(500)
-        .json({ error: error.message});
+      return res.status(500).json({ error: error.message });
     }
   }
 
@@ -254,11 +250,29 @@ class ArtistController {
     }
   }
 
+  static async getSingleById(req: Request, res: Response) {
+    try {
+      const single = await ArtistService.getSingleById(req.params.id);
+      if (single) {
+        res.json(single);
+      } else {
+        res.status(404).json({ error: "Single not found" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
   static async getSinglesByArtist(req: Request, res: Response) {
     try {
       const artistId = req.params.id;
       const singles = await ArtistService.getSinglesByArtist(artistId);
-      res.json(singles);
+
+      if (singles) {
+        res.json(singles);
+      } else {
+        res.status(404).json({ error: "Singles not found" });
+      }
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -267,7 +281,25 @@ class ArtistController {
   static async getAlbums(req: Request, res: Response) {
     try {
       const albums = await ArtistService.getAlbums();
-      res.json(albums);
+
+      if (albums) {
+        res.json(albums);
+      } else {
+        res.status(404).json({ error: "Albums not found" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async getAlbumById(req: Request, res: Response) {
+    try {
+      const album = await ArtistService.getAlbumById(req.params.id);
+      if (album) {
+        res.json(album);
+      } else {
+        res.status(404).json({ error: "Album not found" });
+      }
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -277,7 +309,12 @@ class ArtistController {
     try {
       const artistId = req.params.id;
       const albums = await ArtistService.getAlbumsByArtist(artistId);
-      res.json(albums);
+
+      if (albums) {
+        res.json(albums);
+      } else {
+        res.status(404).json({ error: "Albums not found" });
+      }
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

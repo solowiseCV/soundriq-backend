@@ -29,8 +29,10 @@ router.post("/single", authenticate_1.authenticate, fileUpload_1.upload.fields([
     { name: "coverImage", maxCount: 1 },
 ]), artistController_1.default.uploadSingle);
 router.get("/singles", authenticate_1.authenticate, artistController_1.default.getSingles);
+router.get("/single/:id", authenticate_1.authenticate, artistController_1.default.getSingleById);
 router.get("/singles/:id", authenticate_1.authenticate, artistController_1.default.getSinglesByArtist);
 router.get("/albums", authenticate_1.authenticate, artistController_1.default.getAlbums);
+router.get("/album/:id", authenticate_1.authenticate, artistController_1.default.getAlbumById);
 router.get("/albums/:id", authenticate_1.authenticate, artistController_1.default.getAlbumsByArtist);
 router.post("/album", authenticate_1.authenticate, fileUpload_1.upload.fields([
     { name: "albumFiles", maxCount: 10 },

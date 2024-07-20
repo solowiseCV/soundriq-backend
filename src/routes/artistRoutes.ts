@@ -36,8 +36,10 @@ router.post(
   ArtistController.uploadSingle
 );
 router.get("/singles", authenticate, ArtistController.getSingles);
+router.get("/single/:id", authenticate, ArtistController.getSingleById);
 router.get("/singles/:id", authenticate, ArtistController.getSinglesByArtist);
 router.get("/albums", authenticate, ArtistController.getAlbums);
+router.get("/album/:id", authenticate, ArtistController.getAlbumById);
 router.get("/albums/:id", authenticate, ArtistController.getAlbumsByArtist);
 router.post(
   "/album",

@@ -103,6 +103,29 @@ class ArtistService {
             throw new Error("Unable to retrieve files");
         }
     }
+    // function to get single by id
+    static async getSingleById(singleId) {
+        try {
+            const file = await database_1.default.single.findUnique({
+                where: {
+                    id: singleId,
+                },
+                include: {
+                    artist: {
+                        select: {
+                            artistName: true,
+                            id: true,
+                        },
+                    },
+                },
+            });
+            return file;
+        }
+        catch (error) {
+            console.error(error.message);
+            throw new Error("Unable to retrieve file");
+        }
+    }
     // function to get all singles
     static async getSingles() {
         try {
@@ -141,6 +164,29 @@ class ArtistService {
         catch (error) {
             console.error(error.message);
             throw new Error("Unable to retrieve albums");
+        }
+    }
+    // function to get album by id
+    static async getAlbumById(albumId) {
+        try {
+            const album = await database_1.default.album.findUnique({
+                where: {
+                    id: albumId,
+                },
+                include: {
+                    artist: {
+                        select: {
+                            artistName: true,
+                            id: true,
+                        },
+                    },
+                },
+            });
+            return album;
+        }
+        catch (error) {
+            console.error(error.message);
+            throw new Error("Unable to retrieve album");
         }
     }
     // function to get albums by artist
