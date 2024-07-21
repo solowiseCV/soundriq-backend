@@ -10,6 +10,10 @@
       "description": "API status related endpoints"
     },
     {
+      "name": "user",
+      "description": "User related endpoints"
+    },
+    {
       "name": "auth",
       "description": "Authentication related endpoints"
     },
@@ -240,6 +244,40 @@
           },
           "400": {
             "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/artist/": {
+      "get": {
+        "summary": "Get all users",
+        "tags": [
+          "user"
+        ],
+        "description": "Retrieve a list of all registered users",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "artists": {
+                  "type": "array",
+                  "items": {}
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user found"
           }
         }
       }
