@@ -23,7 +23,7 @@ router.put("/profile", authenticate_1.authenticate, fileUpload_1.upload.fields([
         maxCount: 1,
     },
 ]), artistController_1.default.updateProfile);
-router.get("/profile", artistController_1.default.getArtists);
+router.get("/profile", authenticate_1.authenticate, artistController_1.default.getArtists);
 router.get("/profile/:id", authenticate_1.authenticate, artistController_1.default.getArtist);
 router.post("/single", authenticate_1.authenticate, fileUpload_1.upload.fields([
     { name: "single", maxCount: 1 },
