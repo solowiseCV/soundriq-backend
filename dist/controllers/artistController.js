@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const artistSerivce_1 = __importDefault(require("../services/artistSerivce"));
+const userModel_1 = require("../models/userModel");
 const cloudinary_1 = require("../utils/cloudinary");
 const mime_types_1 = __importDefault(require("mime-types"));
 class ArtistController {
@@ -136,7 +137,10 @@ class ArtistController {
             if (coverImageType !== "image/jpeg" && coverImageType !== "image/png") {
                 throw new Error("Invalid file type");
             }
-            const artistId = req.session.artistId;
+            const result = await (0, userModel_1.findArtistByUserId)(req.userId);
+            const artistId = result === null || result === void 0 ? void 0 : result.id;
+            console.log("artist Id:", artistId);
+            // const artistId = req.session.artistId as string;
             // const userId = req.userId as string;
             const metadata = JSON.parse(req.body.metadata);
             if (!singleFile || !coverImage) {

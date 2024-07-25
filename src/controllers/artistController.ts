@@ -173,7 +173,11 @@ class ArtistController {
         throw new Error("Invalid file type");
       }
 
-      const artistId = req.session.artistId as string;
+      const result = await findArtistByUserId(req.userId as string) as any;
+      const artistId = result?.id;
+      console.log("artist Id:", artistId);
+
+      // const artistId = req.session.artistId as string;
       // const userId = req.userId as string;
 
       const metadata = JSON.parse(req.body.metadata);
