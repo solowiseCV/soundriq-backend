@@ -139,8 +139,7 @@ class ArtistController {
             }
             const result = await (0, userModel_1.findArtistByUserId)(req.userId);
             const artistId = result === null || result === void 0 ? void 0 : result.id;
-            console.log("artist Id from artist:", artistId);
-            // console.log("artist Id:", artistId);
+            // console.log("artist Id from artistController:", artistId);
             // const artistId = req.session.artistId as string;
             const metadata = JSON.parse(req.body.metadata);
             if (!singleFile || !coverImage) {
