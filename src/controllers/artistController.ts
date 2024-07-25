@@ -175,10 +175,10 @@ class ArtistController {
 
       const result = await findArtistByUserId(req.userId as string) as any;
       const artistId = result?.id;
-      console.log("artist Id:", artistId);
+      console.log("artist Id from artist:", artistId);
+      // console.log("artist Id:", artistId);
 
       // const artistId = req.session.artistId as string;
-      // const userId = req.userId as string;
 
       const metadata = JSON.parse(req.body.metadata);
 
@@ -247,7 +247,11 @@ class ArtistController {
         albumFiles = req.files["albumFiles"] ? req.files["albumFiles"] : [];
       }
 
-      const artistId = req.session.artistId as string;
+      const result = (await findArtistByUserId(req.userId as string)) as any;
+      const artistId = result?.id;
+      // console.log("artist Id:", artistId);
+
+      // const artistId = req.session.artistId as string;
       const metadata = JSON.parse(req.body.metadata);
 
       if (!albumCover || albumFiles.length === 0) {

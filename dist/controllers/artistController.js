@@ -139,9 +139,9 @@ class ArtistController {
             }
             const result = await (0, userModel_1.findArtistByUserId)(req.userId);
             const artistId = result === null || result === void 0 ? void 0 : result.id;
-            console.log("artist Id:", artistId);
+            console.log("artist Id from artist:", artistId);
+            // console.log("artist Id:", artistId);
             // const artistId = req.session.artistId as string;
-            // const userId = req.userId as string;
             const metadata = JSON.parse(req.body.metadata);
             if (!singleFile || !coverImage) {
                 return res
@@ -193,7 +193,10 @@ class ArtistController {
                     : undefined;
                 albumFiles = req.files["albumFiles"] ? req.files["albumFiles"] : [];
             }
-            const artistId = req.session.artistId;
+            const result = (await (0, userModel_1.findArtistByUserId)(req.userId));
+            const artistId = result === null || result === void 0 ? void 0 : result.id;
+            // console.log("artist Id:", artistId);
+            // const artistId = req.session.artistId as string;
             const metadata = JSON.parse(req.body.metadata);
             if (!albumCover || albumFiles.length === 0) {
                 return res.status(400).json({ error: "Album cover or files missing" });
