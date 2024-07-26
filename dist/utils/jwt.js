@@ -9,7 +9,7 @@ require("dotenv").config();
 const jwtSecret = process.env.JWT_SECRET;
 // const jwtSecret = require("./config/index").jwtSecret;
 const generateToken = (userId) => {
-    return jsonwebtoken_1.default.sign({ userId }, jwtSecret, { expiresIn: "1d" }); // 1 hour expiration
+    return jsonwebtoken_1.default.sign({ userId }, jwtSecret, { expiresIn: "1d" });
 };
 exports.generateToken = generateToken;
 const generateRefreshToken = (userId) => {

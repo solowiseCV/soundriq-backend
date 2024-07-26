@@ -5,7 +5,7 @@ const jwtSecret = process.env.JWT_SECRET as string;
 // const jwtSecret = require("./config/index").jwtSecret;
 
 export const generateToken = (userId: string): string => {
-  return jwt.sign({ userId }, jwtSecret, { expiresIn: "1d" }); // 1 hour expiration
+  return jwt.sign({ userId }, jwtSecret, { expiresIn: "1d" }); 
 };
 
 export const generateRefreshToken = (userId: string): string => {
