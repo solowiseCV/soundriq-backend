@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import ArtistService from "../services/artistSerivce";
 import { findArtistByUserId } from "../models/userModel";
 import { MulterFile } from "../types/fileTypes";
@@ -134,6 +134,20 @@ class ArtistController {
     } catch (error: any) {
       console.error(error.message);
       res.status(400).json({ error: error.message });
+    }
+  }
+
+  static async checkProfileCompletion(req: Request, res: Response) {
+    try {
+      const userId = req.userId as string;
+      const result = await findArtistByUserId(userId);
+      const artistId = result?.id as string;
+      const profileCompletion = await ArtistService.checkProfileCompletion(
+        artistId
+      );
+      res.json(profileCompletion);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message});
     }
   }
 
@@ -412,6 +426,15 @@ class ArtistController {
       }
     } catch (error: any) {
       res.status(400).json({ error: error.message });
+    }
+  }
+
+  static async getTrendingHits(req: Request, res: Response) {
+    try {
+      const artists = await ArtistService.getTrendingHits();
+      res.json(artists);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
   }
 

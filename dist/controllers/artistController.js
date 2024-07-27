@@ -107,6 +107,18 @@ class ArtistController {
             res.status(400).json({ error: error.message });
         }
     }
+    static async checkProfileCompletion(req, res) {
+        try {
+            const userId = req.userId;
+            const result = await (0, userModel_1.findArtistByUserId)(userId);
+            const artistId = result === null || result === void 0 ? void 0 : result.id;
+            const profileCompletion = await artistSerivce_1.default.checkProfileCompletion(artistId);
+            res.json(profileCompletion);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
     static async uploadSingle(req, res) {
         try {
             if (!req.files || !req.body.metadata) {
@@ -340,6 +352,15 @@ class ArtistController {
         }
         catch (error) {
             res.status(400).json({ error: error.message });
+        }
+    }
+    static async getTrendingHits(req, res) {
+        try {
+            const artists = await artistSerivce_1.default.getTrendingHits();
+            res.json(artists);
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
     static async getArtist(req, res) {

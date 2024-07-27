@@ -3,6 +3,7 @@ import {
   findUserByEmail,
   getAllUsers,
   getAllArtists,
+  calculateProfileCompletion,
 } from "../models/userModel";
 import prisma from "../config/database";
 
@@ -18,6 +19,42 @@ class ArtistService {
         id: userId,
       });
       return user;
+    } catch (error: any) {
+      console.error(error.message);
+      throw new Error(error.message);
+    }
+  }
+
+  // function to check artist profile completion
+  static async checkProfileCompletion(artistId: string) {
+    try {
+      const artistProfile = await prisma.artistProfile.findUnique({
+        where: { id: artistId },
+      });
+
+      const profileCompletion = artistProfile
+        ? calculateProfileCompletion(artistProfile)
+        : 0;
+
+      //check if that artist has at least one single or album
+      const singles = await prisma.single.findMany({
+        where: {
+          artistId: artistId,
+        },
+      });
+
+      const albums = await prisma.album.findMany({
+        where: {
+          artistId: artistId,
+        },
+      });
+
+      const hasContent = singles.length > 0 || albums.length > 0;
+
+      return {
+        hasCompleteProfile: profileCompletion == 100,
+        hasContent: hasContent,
+      };
     } catch (error: any) {
       console.error(error.message);
       throw new Error(error.message);
@@ -176,6 +213,13 @@ class ArtistService {
               id: true,
             },
           },
+          tracks: {
+            select: {
+              id: true,
+              title: true,
+              path: true,
+            },
+          },
         },
       });
       return albums;
@@ -197,6 +241,13 @@ class ArtistService {
             select: {
               artistName: true,
               id: true,
+            },
+          },
+          tracks: {
+            select: {
+              id: true,
+              title: true,
+              path: true,
             },
           },
         },
@@ -222,6 +273,13 @@ class ArtistService {
               id: true,
             },
           },
+          tracks: {
+            select: {
+              id: true,
+              title: true,
+              path: true,
+            },
+          },
         },
       });
       return albums;
@@ -235,6 +293,48 @@ class ArtistService {
   static async getArtists() {
     const artists = await getAllArtists();
     return artists;
+  }
+
+  // function to get trending hits
+  static async getTrendingHits() {
+    const trendingSingles = await prisma.single.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 3,
+      include: {
+        artist: {
+          select: {
+            artistName: true,
+            id: true,
+          },
+        },
+      },
+    });
+
+    const trendingAlbums = await prisma.album.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 3,
+      include: {
+        artist: {
+          select: {
+            artistName: true,
+            id: true,
+          },
+        },
+        tracks: {
+          select: {
+            id: true,
+            title: true,
+            path: true,
+          },
+        },
+      },
+    });
+
+    return { trendingSingle: trendingSingles, trendingAlbums: trendingAlbums };
   }
 
   // function to get artist by id

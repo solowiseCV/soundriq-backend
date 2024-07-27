@@ -23,6 +23,37 @@ class ArtistService {
             throw new Error(error.message);
         }
     }
+    // function to check artist profile completion
+    static async checkProfileCompletion(artistId) {
+        try {
+            const artistProfile = await database_1.default.artistProfile.findUnique({
+                where: { id: artistId },
+            });
+            const profileCompletion = artistProfile
+                ? (0, userModel_1.calculateProfileCompletion)(artistProfile)
+                : 0;
+            //check if that artist has at least one single or album
+            const singles = await database_1.default.single.findMany({
+                where: {
+                    artistId: artistId,
+                },
+            });
+            const albums = await database_1.default.album.findMany({
+                where: {
+                    artistId: artistId,
+                },
+            });
+            const hasContent = singles.length > 0 || albums.length > 0;
+            return {
+                hasCompleteProfile: profileCompletion == 100,
+                hasContent: hasContent,
+            };
+        }
+        catch (error) {
+            console.error(error.message);
+            throw new Error(error.message);
+        }
+    }
     static async uploadSingle(artistId, singleFile, coverImage, metadata) {
         try {
             // create a single file with the cover and metadata info to the artist
@@ -157,6 +188,13 @@ class ArtistService {
                             id: true,
                         },
                     },
+                    tracks: {
+                        select: {
+                            id: true,
+                            title: true,
+                            path: true,
+                        },
+                    },
                 },
             });
             return albums;
@@ -178,6 +216,13 @@ class ArtistService {
                         select: {
                             artistName: true,
                             id: true,
+                        },
+                    },
+                    tracks: {
+                        select: {
+                            id: true,
+                            title: true,
+                            path: true,
                         },
                     },
                 },
@@ -203,6 +248,13 @@ class ArtistService {
                             id: true,
                         },
                     },
+                    tracks: {
+                        select: {
+                            id: true,
+                            title: true,
+                            path: true,
+                        },
+                    },
                 },
             });
             return albums;
@@ -216,6 +268,45 @@ class ArtistService {
     static async getArtists() {
         const artists = await (0, userModel_1.getAllArtists)();
         return artists;
+    }
+    // function to get trending hits
+    static async getTrendingHits() {
+        const trendingSingles = await database_1.default.single.findMany({
+            orderBy: {
+                createdAt: "desc",
+            },
+            take: 3,
+            include: {
+                artist: {
+                    select: {
+                        artistName: true,
+                        id: true,
+                    },
+                },
+            },
+        });
+        const trendingAlbums = await database_1.default.album.findMany({
+            orderBy: {
+                createdAt: "desc",
+            },
+            take: 3,
+            include: {
+                artist: {
+                    select: {
+                        artistName: true,
+                        id: true,
+                    },
+                },
+                tracks: {
+                    select: {
+                        id: true,
+                        title: true,
+                        path: true,
+                    },
+                },
+            },
+        });
+        return { trendingSingle: trendingSingles, trendingAlbums: trendingAlbums };
     }
     // function to get artist by id
     static async getArtist(artistId) {
