@@ -9,7 +9,7 @@ const authenticate_1 = require("../middlewares/authenticate");
 const fileUpload_1 = require("../middlewares/fileUpload");
 const router = (0, express_1.Router)();
 router.get("/", authenticate_1.authenticate, artistController_1.default.getAllUsers);
-router.put("/profile", authenticate_1.authenticate, fileUpload_1.upload.fields([
+router.patch("/profile", authenticate_1.authenticate, fileUpload_1.upload.fields([
     {
         name: "profilePhoto",
         maxCount: 1,

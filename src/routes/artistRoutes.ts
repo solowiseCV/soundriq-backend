@@ -6,7 +6,7 @@ import { upload } from "../middlewares/fileUpload";
 const router = Router();
 
 router.get("/", authenticate, ArtistController.getAllUsers);
-router.put(
+router.patch(
   "/profile",
   authenticate,
   upload.fields([
