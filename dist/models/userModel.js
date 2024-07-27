@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.invalidateResetToken = exports.resetPassword = exports.findUserByPasswordResetToken = exports.savePasswordResetToken = exports.logoutUser = exports.getAllArtists = exports.getAllUsers = exports.findUserByEmail = exports.findArtistByUserId = exports.updateUser = exports.createUser = void 0;
+exports.invalidateResetToken = exports.resetPassword = exports.findUserByPasswordResetToken = exports.savePasswordResetToken = exports.logoutUser = exports.getAllArtists = exports.getAllUsers = exports.findUserByEmail = exports.findArtistByUserId = exports.updateUser = exports.createUser = exports.calculateProfileCompletion = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const profileFields = [
     "artistName",
@@ -32,6 +32,7 @@ const calculateProfileCompletion = (profile) => {
     const completed = Math.floor((filledFields / totalFields) * 85);
     return completed + 15;
 };
+exports.calculateProfileCompletion = calculateProfileCompletion;
 const createUser = async (data) => {
     const { artistProfile, ...userData } = data;
     const profileCompletion = 15;
@@ -52,7 +53,7 @@ exports.createUser = createUser;
 const updateUser = async (data) => {
     const { artistProfile } = data;
     const profileCompletion = artistProfile
-        ? calculateProfileCompletion(artistProfile)
+        ? (0, exports.calculateProfileCompletion)(artistProfile)
         : 0;
     const updatedArtist = await database_1.default.user.update({
         where: { id: data.id },

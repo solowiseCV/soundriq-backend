@@ -45,7 +45,7 @@ const profileFields = [
   "manager",
 ];
 
-const calculateProfileCompletion = (
+export const calculateProfileCompletion = (
   profile: Partial<ArtistProfile>
 ): number => {
   const totalFields = profileFields.length;
