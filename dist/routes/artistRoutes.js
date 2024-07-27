@@ -24,6 +24,10 @@ router.patch("/profile", authenticate_1.authenticate, fileUpload_1.upload.fields
     },
 ]), artistController_1.default.updateProfile);
 router.get("/profile", authenticate_1.authenticate, artistController_1.default.getArtists);
+// check artist profile completion
+router.get("/profile/check", authenticate_1.authenticate, artistController_1.default.checkProfileCompletion);
+// get trending hits
+router.get("/trending", authenticate_1.authenticate, artistController_1.default.getTrendingHits);
 router.get("/profile/:id", authenticate_1.authenticate, artistController_1.default.getArtist);
 router.post("/single", authenticate_1.authenticate, fileUpload_1.upload.fields([
     { name: "single", maxCount: 1 },

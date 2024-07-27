@@ -26,6 +26,12 @@ router.patch(
   ArtistController.updateProfile
 );
 router.get("/profile", authenticate, ArtistController.getArtists);
+
+// check artist profile completion
+router.get("/profile/check", authenticate, ArtistController.checkProfileCompletion);
+
+// get trending hits
+router.get("/trending", authenticate, ArtistController.getTrendingHits);
 router.get("/profile/:id", authenticate, ArtistController.getArtist);
 router.post(
   "/single",
