@@ -283,7 +283,7 @@
       }
     },
     "/artist/profile": {
-      "put": {
+      "patch": {
         "summary": "Complete Artist Profile",
         "tags": [
           "artist"
@@ -384,6 +384,42 @@
         }
       }
     },
+    "/artist/profile/check": {
+      "get": {
+        "summary": "Check if artist profile is complete",
+        "tags": [
+          "artist"
+        ],
+        "description": "Check if an artist's profile is complete",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile is complete",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hasCompleteProfile": {
+                  "type": "boolean"
+                },
+                "hasContent": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "404": {
+              "description": "Profile is incomplete"
+            }
+          }
+        }
+      }
+    },
     "/artist/profile/{artistId}": {
       "get": {
         "summary": "Get Artist Profile",
@@ -410,7 +446,63 @@
         ],
         "responses": {
           "200": {
-            "description": "Artist found"
+            "description": "Artist found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "artistName": {
+                  "type": "string"
+                },
+                "countryOfOrigin": {
+                  "type": "string"
+                },
+                "bio": {
+                  "type": "string"
+                },
+                "musicGenre": {
+                  "type": "string"
+                },
+                "appleMusicAddress": {
+                  "type": "string"
+                },
+                "spotifyAddress": {
+                  "type": "string"
+                },
+                "soundCloudAddress": {
+                  "type": "string"
+                },
+                "youtubeAddress": {
+                  "type": "string"
+                },
+                "instagramAddress": {
+                  "type": "string"
+                },
+                "tiktokAddress": {
+                  "type": "string"
+                },
+                "manager": {
+                  "type": "string"
+                },
+                "profilePhoto": {
+                  "type": "string"
+                },
+                "bannerImage": {
+                  "type": "string"
+                },
+                "signatureSound": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "404": {
             "description": "Artist not found"
@@ -441,7 +533,62 @@
               "properties": {
                 "artists": {
                   "type": "array",
-                  "items": {}
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "artistName": {
+                        "type": "string"
+                      },
+                      "countryOfOrigin": {
+                        "type": "string"
+                      },
+                      "bio": {
+                        "type": "string"
+                      },
+                      "musicGenre": {
+                        "type": "string"
+                      },
+                      "appleMusicAddress": {
+                        "type": "string"
+                      },
+                      "spotifyAddress": {
+                        "type": "string"
+                      },
+                      "soundCloudAddress": {
+                        "type": "string"
+                      },
+                      "youtubeAddress": {
+                        "type": "string"
+                      },
+                      "instagramAddress": {
+                        "type": "string"
+                      },
+                      "tiktokAddress": {
+                        "type": "string"
+                      },
+                      "manager": {
+                        "type": "string"
+                      },
+                      "profilePhoto": {
+                        "type": "string"
+                      },
+                      "bannerImage": {
+                        "type": "string"
+                      },
+                      "signatureSound": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -603,7 +750,51 @@
               "properties": {
                 "singles": {
                   "type": "array",
-                  "items": {}
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "filename": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "coverImage": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "artistId": {
+                        "type": "string"
+                      },
+                      "artist": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "artistName": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -637,7 +828,68 @@
               "properties": {
                 "albums": {
                   "type": "array",
-                  "items": {}
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "filename": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "coverImage": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "artistId": {
+                        "type": "string"
+                      },
+                      "artist": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "artistName": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "tracks": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "path": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -674,7 +926,60 @@
         ],
         "responses": {
           "200": {
-            "description": "Single found"
+            "description": "Single found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "singles": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "filename": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "coverImage": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "artistId": {
+                        "type": "string"
+                      },
+                      "artist": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "artistName": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Single not found"
@@ -708,7 +1013,52 @@
         ],
         "responses": {
           "200": {
-            "description": "Single found"
+            "description": "Single found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "coverImage": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                },
+                "artistId": {
+                  "type": "string"
+                },
+                "artist": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "artistName": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Single not found"
@@ -742,7 +1092,77 @@
         ],
         "responses": {
           "200": {
-            "description": "Album found"
+            "description": "Album found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "albums": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "filename": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "coverImage": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "artistId": {
+                        "type": "string"
+                      },
+                      "artist": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "artistName": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "tracks": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "path": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Album not found"
@@ -776,7 +1196,69 @@
         ],
         "responses": {
           "200": {
-            "description": "Album found"
+            "description": "Album found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "coverImage": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                },
+                "artistId": {
+                  "type": "string"
+                },
+                "artist": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "artistName": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "tracks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Album not found"
