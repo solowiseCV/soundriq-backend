@@ -34,13 +34,16 @@ class UserController {
     try {
       const { email, password } = req.body;
       const { token, userInfo } = await UserService.loginUser(email, password);
+
+      const result = (await findArtistByUserId(userInfo.id as string)) as any;
+      const artistId = result?.id;
       // const userId = userInfo.id;
       
       // const result = await findArtistByUserId(userId);
       // const artistId = result?.id;
       // console.log('artist Id from login:',artistId);
       // req.session.artistId = artistId; // Store artistId in session
-      res.json({ token, userInfo });
+      res.json({ token, userInfo, artistId: artistId });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }

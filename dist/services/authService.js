@@ -40,6 +40,7 @@ class UserService {
         const userInfo = {
             id: userCredential.id,
             email: userCredential.email,
+            name: userCredential.name,
         };
         return { token, userInfo };
     }
