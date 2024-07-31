@@ -624,9 +624,46 @@
                 "metadata": {
                   "type": "object",
                   "properties": {
-                    "title": {
+                    "release_title": {
                       "type": "string",
-                      "example": "My Song"
+                      "example": "Mr. Bad Guy"
+                    },
+                    "track_number": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "song_title": {
+                      "type": "string",
+                      "example": "Let's Turn it On"
+                    },
+                    "song_duration": {
+                      "type": "string",
+                      "example": "PT3M21S"
+                    },
+                    "copyright": {
+                      "type": "string",
+                      "example": {
+                        "master": "℗ 1985 Sony Records",
+                        "composition": "℗ 1985 Marvin Gaye"
+                      }
+                    },
+                    "genres": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "Rock",
+                        "Classic Rock"
+                      ]
+                    },
+                    "release_type": {
+                      "type": "string",
+                      "example": "Single"
+                    },
+                    "music_metadata_version": {
+                      "type": "string",
+                      "example": "3"
                     }
                   }
                 }
@@ -688,9 +725,46 @@
                 "metadata": {
                   "type": "object",
                   "properties": {
-                    "title": {
+                    "release_title": {
                       "type": "string",
-                      "example": "My Album"
+                      "example": "Hope"
+                    },
+                    "track_number": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "song_title": {
+                      "type": "string",
+                      "example": "Hope"
+                    },
+                    "song_duration": {
+                      "type": "string",
+                      "example": "PT3M21S"
+                    },
+                    "copyright": {
+                      "type": "string",
+                      "example": {
+                        "master": "℗ 1985 Sony Records",
+                        "composition": "℗ 1985 Marvin Gaye"
+                      }
+                    },
+                    "genres": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "Rock",
+                        "Classic Rock"
+                      ]
+                    },
+                    "release_type": {
+                      "type": "string",
+                      "example": "Album"
+                    },
+                    "music_metadata_version": {
+                      "type": "string",
+                      "example": "3"
                     }
                   }
                 }
